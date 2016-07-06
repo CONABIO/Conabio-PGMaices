@@ -52,7 +52,7 @@ shinyServer(function(input, output) {
           )%>%
         addCircleMarkers(Goldberg$longitude, Goldberg$latitude, weight = 4, radius = 7, stroke = F, fillOpacity = 0.8, color=TTT[1],clusterOptions = markerClusterOptions(showCoverageOnHover = TRUE, spiderfyOnMaxZoom = T,zoomToBoundsOnClick = T), popup =paste(sep = " ","Raza Maiz=",Goldberg$Raza_primaria, ", Municipio=",Goldberg$Municipio, ". Localidad=",Goldberg$Localidad))%>%
         addMeasure(primaryLengthUnit = "kilometers", primaryAreaUnit = "hectares",activeColor = '#FF00FF')%>%
-        addProviderTiles("Esri.WorldTopoMap")
-        #addProviderTiles("OpenStreetMap.HOT")
+        #addProviderTiles("Esri.WorldTopoMap")
+        addProviderTiles("OpenStreetMap.DE")
     })
 })
