@@ -36,25 +36,23 @@ shinyServer(function(input, output) {
     }
   )
 
+  
+  #P el mapa en leaflet
       output$mymap <- renderLeaflet({
-         
-       #pal3 <- pal2
-        TTT <- sample(brewer.pal(8,"Dark2"),1)
+       TTT <- sample(brewer.pal(8,"Dark2"),1)
         Goldberg <- points()
         TT <- paste(Goldberg$Raza_primaria)
         leaflet(data = Goldberg) %>%
         clearShapes() %>%
         addTiles() %>%
         clearBounds()%>%  
-        #setView(lng=-101.383331, lat=20, zoom=5, options=list(reset = T))%>%
           addLayersControl(
             overlayGroups = c(TT),
             options = layersControlOptions(collapsed = T)
           )%>%
         addCircleMarkers(Goldberg$longitude, Goldberg$latitude, weight = 4, radius = 7, stroke = F, fillOpacity = 0.8, color=TTT[1],clusterOptions = markerClusterOptions(showCoverageOnHover = TRUE, spiderfyOnMaxZoom = T,zoomToBoundsOnClick = T), popup =paste(sep = " ","Raza Maiz=",Goldberg$Raza_primaria, ", Municipio=",Goldberg$Municipio, ". Localidad=",Goldberg$Localidad))%>%
-          
-        addMeasure(primaryLengthUnit = "kilometers", primaryAreaUnit = "hectares",activeColor = '#FF00FF')
+        addMeasure(primaryLengthUnit = "kilometers", primaryAreaUnit = "hectares",activeColor = '#FF00FF')%>%
+        addProviderTiles("Esri.WorldTopoMap")
         #addProviderTiles("OpenStreetMap.HOT")
-
     })
 })
