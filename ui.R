@@ -1,7 +1,6 @@
-
-
 library(shiny)
 library(leaflet)
+library(knitr)
 
 # Define UI for slider demo application
 shinyUI(fluidPage(
@@ -27,19 +26,12 @@ shinyUI(fluidPage(
       selectInput(inputId="Estado",
                   label=h6("Estado:"),
                   c("All", levels(TableL$Estado))),
-      #Por año
-      #selectInput(inputId="Year",
-      #            label=h6("Año:"),
-      #            c("All", levels(TableL$Year))),
-      
-     # checkboxGroupInput("Anhio_Colecta", label=h6("Año:"),
-     #           choice=levels(TableL$Anhio_Colecta),selected=levels(TableL$Anhio_Colecta)),
       
       checkboxGroupInput("Periodo_Colecta", label=h6("Período de Colecta:"),
                          choice = levels(TableL$Periodo_Colecta), selected = levels(TableL$Periodo_Colecta)),
       
       
-      h6("Descargar los datos visualizados en el mapa"),
+      h6("Descargar los datos seleccionados para la visualizados en el mapa"),
       downloadButton('downloadData', 'Descargar (csv)'),
       br(),
       br(),
@@ -47,22 +39,17 @@ shinyUI(fluidPage(
       h6("Proyecto Global de Maíces"),
       tags$a(href="http://www.biodiversidad.gob.mx/genes/proyectoMaices.html", "Proyecto Maices"),
       br(),
-      h6("Download Full Database"),
+      h6("Descarga de la base de datos"),
       tags$a(href="http://www.biodiversidad.gob.mx/genes/pdf/proyecto/Anexo13_Base%20de%20datos/BaseMaicesNativos.xlsx", "DataBase"),
       br(),
       h6("comentarios: aponce@conabio.gob.mx"),
       br(),
       h5("Github:"),
-      tags$a(href="https://github.com/APonce73/Conabio-Maices", "Conabio-Maíces"),
+      tags$a(href="https://github.com/APonce73/Conabio-PGMaices", "Conabio-Maíces"),
       width=2),
-      
-  
-  
-    fluidRow(
+     fluidRow(
       column(9,leafletOutput("mymap",height=700))
     )
-    
   )
-        
 ))
 
