@@ -9,12 +9,12 @@ library(dplyr)
 #setwd("~/Dropbox/JANO/2016/Conabio/Github/shiny_maiz/")
 
 #TableP<-read.table("~/Dropbox/JANO/2016/Conabio/Github/shiny_maiz/RawData.txt", head=T, sep="\t")
-TableP<-read.table("RawData.txt", head=T, sep="\t")
+TableP <- read.table("RawData.txt", head=T, sep= "\t", fileEncoding = "WINDOWS-1252")
 
 dim(TableP)
 names(TableP)
-TTabla <- TableP%>%
-  filter(!is.na(Raza_primaria))%>%
+TTabla <- TableP %>%
+  filter(!is.na(Raza_primaria)) %>%
   filter(!is.na(Latitud))
 dim(TTabla)
 names(TTabla)
