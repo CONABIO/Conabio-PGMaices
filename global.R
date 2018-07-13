@@ -15,13 +15,16 @@ library(googleVis)
 #setwd("C:\\Users\\aponce\\Dropbox\\JANO\\2016\\Conabio\\Github\\shiny_maiz\\")
 
 #For Mac
-#setwd("~/Dropbox/JANO/2016/Conabio/Github/shiny_maiz/")
+ 
+#setwd("~/Dropbox/GitHub/Conabio-PGMaices")
 
 #TableP<-read.table("~/Dropbox/JANO/2016/Conabio/Github/shiny_maiz/RawData.txt", head=T, sep="\t")
-#dir()
+dir()
 #getwd()
 #dir('./image')
-TableP <- read.csv("RawData.csv", head = T, sep = ",")
+#TableP <- read.csv("RawData.csv", head = T, sep = ",")
+TableP <- read.csv("PGM_maices_Alex.csv", head = T, sep = ",")
+
 #str(TableP)
 names(TableP)
 levels(TableP$Complejo_racial)
@@ -34,7 +37,8 @@ TableP$Estado
 TTabla <- TableP %>%
   filter(!is.na(Raza_primaria)) %>%
   filter(!is.na(Latitud)) %>%
-  filter(Estado != "ND")
+  filter(Estado != "ND") %>%
+  filter(Raza_primaria != "ND")
 
 levels(TTabla$Estado)
 dim(TTabla)
@@ -51,42 +55,45 @@ levels(TTabla$Raza_primaria)
 
 names(TTabla)
 TTabla <- TTabla %>%
-  mutate(Estado = revalue(Estado,c("AGUASCALIENTES" = "AGS"))) %>%
-  mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA" = "BC"))) %>%
-  mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA SUR" = "BCS"))) %>%
-  mutate(Estado = revalue(Estado,c("CAMPECHE" = "CAMP"))) %>%
-  mutate(Estado = revalue(Estado,c("CHIAPAS" = "CHPS"))) %>%
-  mutate(Estado = revalue(Estado,c("CHIHUAHUA" = "CHIH"))) %>%
-  mutate(Estado = revalue(Estado,c("COAHUILA DE ZARAGOZA" = "COAH"))) %>%
-  mutate(Estado = revalue(Estado,c("COLIMA" = "COL"))) %>%
-  mutate(Estado = revalue(Estado,c("DISTRITO FEDERAL" = "CDMX"))) %>%
-  mutate(Estado = revalue(Estado,c("DURANGO" = "DGO"))) %>%
-  mutate(Estado = revalue(Estado,c("ESTADO DE MÉXICO" = "MEX"))) %>%
-  mutate(Estado = revalue(Estado,c("GUANAJUATO" = "GTO"))) %>%
-  mutate(Estado = revalue(Estado,c("GUERRERO" = "GRO"))) %>%
-  mutate(Estado = revalue(Estado,c("HIDALGO" = "HGO"))) %>%
-  mutate(Estado = revalue(Estado,c("JALISCO" = "JAL"))) %>%
-  mutate(Estado = revalue(Estado,c("MICHOACÁN DE OCAMPO" = "MICH"))) %>%
-  mutate(Estado = revalue(Estado,c("MORELOS" = "MOR"))) %>%
-  mutate(Estado = revalue(Estado,c("NAYARIT" = "NAY"))) %>%
-  mutate(Estado = revalue(Estado,c("NUEVO LEÓN" = "NL"))) %>%
-  mutate(Estado = revalue(Estado,c("OAXACA" = "OAX"))) %>%
-  mutate(Estado = revalue(Estado,c("PUEBLA" = "PUE"))) %>%
-  mutate(Estado = revalue(Estado,c("QUERÉTARO DE ARTEAGA" = "QRO"))) %>%
-  mutate(Estado = revalue(Estado,c("QUINTANA ROO" = "QROO"))) %>%
-  mutate(Estado = revalue(Estado,c("SAN LUIS POTOSÍ" = "SLP"))) %>%
-  mutate(Estado = revalue(Estado,c("SINALOA" = "SIN"))) %>%
-  mutate(Estado = revalue(Estado,c("SONORA" = "SON"))) %>%
-  mutate(Estado = revalue(Estado,c("TABASCO" = "TAB"))) %>%
-  mutate(Estado = revalue(Estado,c("TAMAULIPAS" = "TAM"))) %>%
-  mutate(Estado = revalue(Estado,c("TLAXCALA" = "TLAX"))) %>%
-  mutate(Estado = revalue(Estado,c("VERACRUZ DE IGNACIO DE LA LLAVE" = "VER"))) %>%
-  mutate(Estado = revalue(Estado,c("YUCATÁN" = "YUC"))) %>%
-  mutate(Estado = revalue(Estado,c("ZACATECAS" = "ZAC"))) %>%
+  mutate(Estado = revalue(Estado,c("AGUASCALIENTES" = "Aguascalientes"))) %>%
+  mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA" = "Baja California"))) %>%
+  mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA SUR" = "Baja California Sur"))) %>%
+  mutate(Estado = revalue(Estado,c("CAMPECHE" = "Campeche"))) %>%
+  mutate(Estado = revalue(Estado,c("CHIAPAS" = "Chiapas"))) %>%
+  mutate(Estado = revalue(Estado,c("CHIHUAHUA" = "Chihuahua"))) %>%
+  mutate(Estado = revalue(Estado,c("COAHUILA DE ZARAGOZA" = "Coahuila"))) %>%
+  mutate(Estado = revalue(Estado,c("COLIMA" = "Colima"))) %>%
+  mutate(Estado = revalue(Estado,c("DISTRITO FEDERAL" = "Ciudad de México"))) %>%
+  mutate(Estado = revalue(Estado,c("DURANGO" = "Durango"))) %>%
+  mutate(Estado = revalue(Estado,c("MEXICO" = "México"))) %>%
+  mutate(Estado = revalue(Estado,c("GUANAJUATO" = "Guanajuato"))) %>%
+  mutate(Estado = revalue(Estado,c("GUERRERO" = "Guerrero"))) %>%
+  mutate(Estado = revalue(Estado,c("HIDALGO" = "Hidalgo"))) %>%
+  mutate(Estado = revalue(Estado,c("JALISCO" = "Jalisco"))) %>%
+  mutate(Estado = revalue(Estado,c("MICHOACAN DE OCAMPO" = "Michoacán"))) %>%
+  mutate(Estado = revalue(Estado,c("MORELOS" = "Morelos"))) %>%
+  mutate(Estado = revalue(Estado,c("NAYARIT" = "Nayarit"))) %>%
+  mutate(Estado = revalue(Estado,c("NUEVO LEON" = "Nuevo León"))) %>%
+  mutate(Estado = revalue(Estado,c("OAXACA" = "Oaxaca"))) %>%
+  mutate(Estado = revalue(Estado,c("PUEBLA" = "Puebla"))) %>%
+  mutate(Estado = revalue(Estado,c("QUERETARO DE ARTEAGA" = "Querétaro"))) %>%
+  mutate(Estado = revalue(Estado,c("QUINTANA ROO" = "Quintana Roo"))) %>%
+  mutate(Estado = revalue(Estado,c("SAN LUIS POTOSI" = "San Luis Potosí"))) %>%
+  mutate(Estado = revalue(Estado,c("SINALOA" = "Sinaloa"))) %>%
+  mutate(Estado = revalue(Estado,c("SONORA" = "Sonora"))) %>%
+  mutate(Estado = revalue(Estado,c("TABASCO" = "Tabasco"))) %>%
+  mutate(Estado = revalue(Estado,c("TAMAULIPAS" = "Tamaulipas"))) %>%
+  mutate(Estado = revalue(Estado,c("TLAXCALA" = "Tlaxcala"))) %>%
+  mutate(Estado = revalue(Estado,c("VERACRUZ DE IGNACIO DE LA LLAVE" = "Veracruz"))) %>%
+  mutate(Estado = revalue(Estado,c("YUCATAN" = "Yucatán"))) %>%
+  mutate(Estado = revalue(Estado,c("ZACATECAS" = "Zacatecas"))) %>%
   mutate(Complejo_racial = revalue(Complejo_racial,c("Chapalote" = "Chapalotes"))) %>%
   mutate(Complejo_racial = revalue(Complejo_racial,c("Cónico" = "Cónicos"))) %>%
-  mutate(Complejo_racial = revalue(Complejo_racial,c("Dentados_tropicales" = "Dentados tropicales"))) %>%
-  mutate(Raza_primaria = revalue(Raza_primaria,c("Palomero Toluquenho" = "Palomero Toluqueño")))
+  mutate(Raza_primaria = revalue(Raza_primaria,c("Nal-Tel de Altura" = "Nal-tel de Altura"))) %>%
+  mutate(Raza_primaria = revalue(Raza_primaria,c("Complejo Serrano de Jalisco" = "Serrano de Jalisco")))
+
+ # mutate(Complejo_racial = revalue(Complejo_racial,c("Dentados_tropicales" = "Dentados tropicales")))
+  #mutate(Raza_primaria = revalue(Raza_primaria,c("Palomero Toluqueño" = "Palomero Toluqueño")))
 
 #  mutate(Complejo_racial = revalue(Complejo_racial,c("Dentados_tropicales" = "Den_Trop"))) %>%
 #  mutate(Complejo_racial = revalue(Complejo_racial,c("Ocho hileras" = "8_Hileras"))) %>%
@@ -97,34 +104,48 @@ TTabla <- TTabla %>%
 levels(TTabla$Estado)
 levels(TTabla$Complejo_racial)
 
-names(TTabla)[11] <- c("longitude")
-names(TTabla)[12] <- c("latitude")
+names(TTabla)
+head(TTabla)
+summary(TTabla)
+names(TTabla)[20] <- c("longitude")
+names(TTabla)[21] <- c("latitude")
 
 dim(TTabla)
 nrow(TTabla)
 
 #Ventana 1 Mapa
 TableL <- TTabla
+#TableL$Periodo <- as.character(TableL$Periodo)
+str(TableL$Periodo)
+
+names(TableL)
 
 #Ventana 2 Foto y Cleveland Plot
-TableL1 <- TTabla[,c(1:10,74:79)]
+TableL1 <- TTabla
 Val1 <- rep(1, nrow(TableL1))
-TableL1 <- data.frame(TableL1, Val1)
+TableL1 <- data.frame(TableL1[,-c(31,32)], Val1)
+head(TableL1)
 rm(Val1)
-names(TableL1)[3] <- c("Raza_Primaria")
+names(TableL1)[27] <- c("Raza_Primaria")
 names(TableL1)
 
 attach(TableL1)
-TableL1a <- aggregate(TableL1[,10:16], by = list(Raza_Primaria,Estado), FUN = mean, na.rm = T)
-TableL1b <- aggregate(TableL1[,17], by = list(Raza_Primaria,Estado), FUN = sum, na.rm = T)
+TableL1a <- aggregate(TableL1[,31], by = list(Raza_Primaria,Estado), FUN = sum, na.rm = T)
+#TableL1b <- aggregate(TableL1[,17], by = list(Raza_Primaria,Estado), FUN = sum, na.rm = T)
+head(TableL1a)
+
+names(TableL1a)
+dim(TableL1a)
 
 detach(TableL1)
 
-TableL1c <- data.frame(TableL1a,TableL1b[,3])
-names(TableL1c)[1] <- c("Raza_Primaria")
-names(TableL1c)[2] <- c("Estado")
-names(TableL1c)[10] <- c("Val1")
-head(TableL1c)
+#TableL1c <- data.frame(TableL1a,TableL1b[,3])
+names(TableL1a)[1] <- c("Raza_Primaria")
+names(TableL1a)[2] <- c("Estado")
+names(TableL1a)[3] <- c("Val1")
+head(TableL1a)
+
+TableL1c <- TableL1a
 
 
 #Ventana 3 StrucPlot
@@ -132,119 +153,60 @@ Val1 <- rep(1, nrow(TTabla))
 TableLL <- data.frame(TTabla, Val1)
 names(TableLL)
 rm(Val1)
-TableLL <- TableLL[,c(3,4,6,7,95)]
+TableLL <- TableLL[,c(27,28,10,17,31)]
 
-#names(TableLL)
-#dim(TableLL)
-#head(TableLL)
-######################################################
-######################################################
-#For MosaicPlot
-#TTabla2 <- TableLL %>%
-#  filter(Estado == "AGS")
-##attach(TTabla)
-
-#Tabla1 <- xtabs(TTabla2$Val1~TTabla2$Raza_primaria + TTabla2$Complejo_racial)
-#Tabla1
-#detach(TTabla)
-
-#Tabla4 <- Tabla1[apply(Tabla1,1,sum) > 0,apply(Tabla1,2,sum) > 0]
-#assoc(Tabla4, gp = shading_hsv, labeling_args = list(rot_labels = c(left = 0, bottom = 270,right = 0), abbreviate = c(variable = TRUE)), zero_size = 0, main = "Mexico")
-
-#####################
-
-#Ventana 2.1 Sankey plot
 
 names(TableL)
 Val1 <- rep(1, nrow(TableL))
 TableL1 <- data.frame(TableL,Val1)
-rm(Val1)
-#levels(TableL$Complejo_racial)
-#head(TableL1)
-#Zodiac <- paste(TableL1[,4],TableL1[,3], sep = ";")
+names(TableL1)
 
-#levels(TableL1$Complejo_racial)
-#TableL12 <- TableL1 %>%
-#  filter(Complejo_racial == "Chapalotes")
-#dim(TableL12)
-#na.omit(TableL12)
-
-TableL2 <- TableL1[,c(3,4,7,95)]
-dim(TableL2)
-head(TableL2,30)
-#names(TableL2)
-#levels(TableL2$Complejo_racial)
+TableL2 <- TableL1[,c(27,28,17,31)]
 
 
-#attach(TableL2)
-#TableLJJ <- aggregate($Val1 ~ $Complejo_racial + $Estado , FUN = sum, na.rm = T)
-#TableLJJF <- aggregate(Val1 ~ Complejo_racial + Raza_primaria, FUN = sum, na.rm = T)
-
-#names(TableLJJ)[1] <- c("origin")
-#names(TableLJJ)[2] <- c("visit")
-#head(TableLJJF)
-#names(TableLJJF)[2] <- c("origin")
-#names(TableLJJF)[1] <- c("visit")
-
-#detach(TableL2)
-#Katcha <- rbind(TableLJJ,TableLJJF)
-
-
-#str(Katcha)
-#levels(Katcha$origin)
-#levels(Katcha$visit)
-
-#head(Katcha,90)
-
-#Katcha[1:39,]
-#tail(Katcha,11)
-#levels(Katcha$origin)
-#levels(Katcha$visit)
-
-#Katcha$origin <- as.factor(as.numeric(Katcha$origin))
-#Katcha$visit <- as.factor(as.numeric(Katcha$visit))
-#Katcha1 <- Katcha[-c(11),]
-
-#Note: Avoid cycles in your data: if A links to itself, or links to B which links to C which links to A, your chart will not render.
-
-#plot(
-#  gvisSankey(Katcha, from = "origin", to = "visit", weight = "Val1",
-#                options = list(height = 250, width = 250,
-#                               sankey = "{link:{color:{fill:'lighblue'}}}"
-#                      #         sankey = "{
-#                      #         link:{color:{fill: 'red', fillOpacity: 0.7}},
-#                      #         node:{nodePadding: 5, label:{fontSize: 12}, interactivity: true, width: 20},
-#                      #         }"
-#                               )
-#               )
-#      )
+names(TableL)
+TablaPP <- TableL %>%
+  select(Raza_primaria, Complejo_racial) %>%
+  #filter(Altitud < 5000) %>%
+  distinct()
 
 
 
-#plot(gvisSankey(Katcha, from = "origin", to = "visit", weight = "Val1",
-#                options = list(height = 750, width = 950,
-#                               sankey = "{
-#                               link:{color:{fill: 'red', fillOpacity: 0.7}},
-#                               node:{nodePadding: 5, label:{fontSize: 12}, interactivity: true, width: 20},
-#                               }")
-#               )
-#     )
+#Cargar los datos de Teocintle
+Teocintle <- read.csv("Teocintle.csv", head = T, sep = ",")
+head(Teocintle)
+dim(Teocintle)
+summary(Teocintle)
 
+Teo1 <- Teocintle %>%
+  filter(!is.na(Latitud)) %>%
+  distinct()
 
+names(Teo1)[15] <- c("long")
+names(Teo1)[16] <- c("lat")
 
-#library(networkD3)
+dim(Teocintle)
+dim(Teo1)
 
-## Load energy projection data
-## Load energy projection data
-#URL <- paste0(
-#  "https://cdn.rawgit.com/christophergandrud/networkD3/",
-#  "master/JSONdata/energy.json")
-#URL
-#Energy <- jsonlite::fromJSON(URL)
-#
-#
-## Plot
-#sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "source",
-#              Target = "target", Value = "value", NodeID = "name",
-#              units = "TWh", fontSize = 12, nodeWidth = 30)
+#Cargar los datos de Teocintle
+Tripsacum <- read.delim("Tripsacum.csv", head = T, sep = ",")
+head(Tripsacum)
+dim(Tripsacum)
+summary(Tripsacum)
+str(Tripsacum)
+Trip1 <- Tripsacum %>%
+  #mutate(Altitud = as.numeric(Altitud)) %>%
+  #mutate(Longitud = as.numeric(Longitud)) %>%
+  #mutate(Latitud = as.numeric(Latitud)) %>%
+  filter(!is.na(Latitud)) %>%
+  distinct()
+
+names(Trip1)
+head(Trip1,25)
+
+names(Trip1)[12] <- c("long")
+names(Trip1)[13] <- c("lat")
+
+#Trip2 <- data.frame()
+
 
