@@ -30,14 +30,15 @@ diversidad genética del maíz"),
              column(4, wellPanel(
                h3("Proyecto Global de maíces"),
                h5("El proyecto es liderado por ", tags$a(href = "http://www.conabio.gob.mx/", 
-          "Conabio"  ) ," y 
+          "CONABIO"  ) ," y 
           coordinado con el Instituto Nacional de Investigaciones Forestales, 
           Agrícolas y Pecuarias (", tags$a(href = "http://www.inifap.gob.mx/", 
-          "INIFAP"),") y el Instituto Nacional de Ecología (INE). "),
-          br(),
+          "INIFAP"),") y el Instituto Nacional de Ecología y Cambio Climático (", 
+          tags$a(href = "https://www.gob.mx/inecc", "INECC") , ")"),
+          #br(),
           h5("El proyecto incluye tres líneas de acción:"),
           h5("1. Generación de un documento sobre centros de origen y de diversidad genética del maíz"),
-          h5("2. Computarización de colecciones científicas de maíz nativo, teocintle y Tripsacum y "),
+          h5("2. Computarización de colecciones científicas de maíz nativo, teocintle y tripsacum "),
           h5("3. Conocimiento de la diversidad y distribución actual del maíz nativo y sus parientes silvestres a través de proyectos de colecta")
                                  )
              ),
@@ -45,14 +46,15 @@ diversidad genética del maíz"),
              
              column(3, wellPanel(h3("Visualización Shiny"),
                                  h5("Esta visualización esta basada en los datos de maíz, teocintle y tripsacum
-                                    del proyecto global de maíces. Los datos que se usaron son solamente los que tienen una 
-                                    georeferenciación a un sitio de México."),
+                                    del",
+                                    tags$a(href = "http://www.biodiversidad.gob.mx/genes/proyectoMaices.html", "Proyecto Global de Maíces"  )),
                                  h5("La visualización tiene las siguientes páginas:"),
                                  h5("Introducción"),
-                                 h5("Mapa"),
-                                 h5("Maíces"),
-                                 h5("Sankey"),
-                                 h5("Datos adicionales del maíz")
+                                 h5("Datos georeferencias del Proyecto Global de maíces"),
+                                 h5("Datos Generales de las razas de maíces"),
+                                 h5("Gráfica de Sankey"),
+                                 h5("Datos adicionales sobre el maíz"),
+                                 h5("Bibliografía del proyecto")
                                  
                                  
                                   #div(img(src = "Mapa.png", style = "display:block; margin-left: auto; margin-right: auto;",width = "400", height = "300")),
