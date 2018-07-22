@@ -5,8 +5,8 @@ account: conabio
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 360666
-bundleId: 1493342
+bundleId: 1494066
 url: https://conabio.shinyapps.io/conabio-pgmaices1/
-when: 1532240082.7397
+when: 1532290361.15559
 asMultiple: FALSE
 asStatic: FALSE

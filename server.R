@@ -225,7 +225,7 @@ shinyServer(function(input, output, session) {
       dplyr::select(Informacion1)
     
     
-    print(Anexo7)
+    print(Anexo7[1,], max.levels = 0, justify = c("right"), zero.print = ".")
     #dataset <- datasetInput()
     #summary(dataset)
   })
@@ -240,7 +240,7 @@ shinyServer(function(input, output, session) {
       # use a larger dot
       geom_segment(aes(yend = Estado, xend = 0)) +
       # plot the n points and color them
-      geom_point(size = 1, color = "red") +
+      geom_point(size = 3, color = "red", shape = 15) +
       labs(title = "", x = "No. Registros", y = "Estados")
       #theme_bw() +
       #coord_flip()

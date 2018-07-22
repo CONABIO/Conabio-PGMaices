@@ -207,19 +207,24 @@ names(Trip1)[13] <- c("lat")
 
 Anexo6 <- read.csv("Anexo6_InfoMaices.csv", head = T, sep = ",")
 Anexo6$Raza_Primaria <- as.character(Anexo6$Raza_Primaria)
-class(Anexo6)
-head(Anexo6)
-dim(Anexo6)
-names(Anexo6)
+#class(Anexo6)
+#head(Anexo6)
+#dim(Anexo6)
+#names(Anexo6)
 
 #Anexo6[45,3]
 #Anexo6
 #str(Anexo6)
 #Anexo7 <- Anexo6 %>%
-#  dplyr::filter(Raza_Primaria == "Cónico")
+#  dplyr::filter(Raza_Primaria == "Chalqueño") %>%
+#  dplyr::select(Informacion1)
+
+#class(Anexo7)
 
 #print(Anexo7)
-
+#print(Anexo7[1,1])
+#head(Anexo7)
+#dim(Anexo7)
 #Anexo6[Anexo6$Raza_Primaria == "Cónico"]
 #Anexo6a <- Anexo6[Anexo6$Raza_Primaria %in% inorg,3]
 #print(Anexo6a)
