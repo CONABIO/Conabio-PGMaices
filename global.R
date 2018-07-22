@@ -10,10 +10,6 @@ library(googleVis)
 
 #library(ggplot2movies)
 
-
-#For PC
-#setwd("C:\\Users\\aponce\\Dropbox\\JANO\\2016\\Conabio\\Github\\shiny_maiz\\")
-
 #For Mac
  
 #setwd("~/Dropbox/GitHub/Conabio-PGMaices")
@@ -209,4 +205,22 @@ names(Trip1)[13] <- c("lat")
 
 #Trip2 <- data.frame()
 
+Anexo6 <- read.csv("Anexo6_InfoMaices.csv", head = T, sep = ",")
+Anexo6$Raza_Primaria <- as.character(Anexo6$Raza_Primaria)
+class(Anexo6)
+head(Anexo6)
+dim(Anexo6)
+names(Anexo6)
+
+#Anexo6[45,3]
+#Anexo6
+#str(Anexo6)
+#Anexo7 <- Anexo6 %>%
+#  dplyr::filter(Raza_Primaria == "Cónico")
+
+#print(Anexo7)
+
+#Anexo6[Anexo6$Raza_Primaria == "Cónico"]
+#Anexo6a <- Anexo6[Anexo6$Raza_Primaria %in% inorg,3]
+#print(Anexo6a)
 

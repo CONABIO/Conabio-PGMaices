@@ -205,6 +205,7 @@ shinyServer(function(input, output, session) {
       TableLH <- TableL1c[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
   })
 
+  #Para la imagen
   output$preImage <- renderImage({
     inorg <- input$Raza_Primaria
     TableLH <- TableL[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
@@ -215,6 +216,20 @@ shinyServer(function(input, output, session) {
          alt = paste("Raza de maíz", input$Raza_Primaria))
   }, deleteFile = FALSE)
   
+  #Para el summary
+  # Generate a summary of the dataset ----
+  output$summary1 <- renderPrint({
+    inorg <- input$Raza_Primaria
+    Anexo7 <- Anexo6 %>%
+      dplyr::filter(Raza_Primaria == inorg) %>%
+      dplyr::select(Informacion1)
+    
+    
+    print(Anexo7)
+    #dataset <- datasetInput()
+    #summary(dataset)
+  })
+  #Para la gráfica
   
   output$plot11 <- renderPlotly({
     #newData<-TablaVal

@@ -165,9 +165,21 @@ diversidad genética del maíz"),
                  h5("Github:"),
                  tags$a(href = "https://github.com/APonce73/Conabio-PGMaices", "Conabio-Maíces"),
                  width = 2),
+               
+               
                fluidRow(
-                 column(9, imageOutput('preImage', height = 500, width = 500)),
-                 column(8,plotlyOutput("plot11", height = 700, width = 900))
+                 column(6, imageOutput('preImage', height = 500, width = 500)),
+                
+                 column(9, wellPanel(
+                   h4("Características generales"),
+                   textOutput("summary1"),
+                   h5("Fuente:", tags$a(href = "https://www.biodiversidad.gob.mx/genes/pdf/proyecto/Anexo6_ReunionesTalleres/Tabla%20razas_marzo%202010.pdf", "Maíces"))
+                        )),
+                   #column(9, imageOutput('preImage', height = 500, width = 500)),
+                 column(9, 
+                   plotlyOutput("plot11", height = 300, width = 600)
+                 )
+                 
                  
                         
                )
