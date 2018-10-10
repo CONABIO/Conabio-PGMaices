@@ -1,7 +1,7 @@
 library(shiny)
 library(leaflet)
 library(RColorBrewer)
-library(dplyr)
+#library(dplyr)
 library(knitr)
 library(vcd)
 library(grid)
@@ -9,10 +9,11 @@ library(plotly)
 library(ggplot2)
 library(googleVis)
 library(igraph)
+library(scales)
+#library(dicromat)
 
 # Define server logic for slider examples
 shinyServer(function(input, output, session) {
-  
   
   #Para ventana 00
   
@@ -38,59 +39,29 @@ shinyServer(function(input, output, session) {
   points <- reactive({
     #input$update
     #TableL <- TableL()
-    if (input$Raza_primaria != "All") {
-      TableL <- TableL[TableL$Raza_primaria %in% input$Raza_primaria,]
-    }else TableL <- TableL
+   
+    if (input$Complejo_racial != "All") {
+      TableL <- TableL[TableL$Complejo_racial %in% input$Complejo_racial,]
+    } else TableL <- TableL
     
-  #  if (input$Complejo_racial != "All") {
-  #    TableL <- TableL[TableL$Complejo_racial %in% input$Complejo_racial,]
-  #  }else TableL <- TableL
+ #    if (input$Raza_primaria != "All") {
+#      TableL <- TableL[TableL$Raza_primaria %in% input$Raza_primaria,]
+#    }else TableL <- TableL
+    
+    
+      if (input$Proyecto != "All") {
+        TableL <- TableL[TableL$Proyecto %in% input$Proyecto,]
+      }else TableL <- TableL
     
     if (input$Estado != "All") {
       TableL <- TableL[TableL$Estado %in% input$Estado,]
     }else TableL <- TableL
     
     
-      
-   # input$Teo1 <- renderDataTable({input$Teocintle })
-    
-  #  input$Trip1 <- renderDataTable({input$Tripsacum })
-    
-   #if (input$Teocintle == renderDataTable(Teo1)) {
-  #  }else Teo1 <- NULL
-    
-  #  if (input$Tripsacum == renderDataTable(Trip1)) {
-  #  }else Trip1 <- NULL
-    
-    
-  #  if (input$Periodo != "All") {
-  #    TableL <- TableL[TableL$Periodo %in% input$Periodo,]
-  #  } else TableL <- TableL
-    
   })
+ 
+
   
-        #para teocintle
-  
-#  points1 <- reactive({
-#    if (input$teocintle == "Teocintle") {
-#      Teo1 <- Teo1
-#    }else Teo1 <- NA
-#  })
-  
-        #Para Tripsacum
-#   points2 <- reactive({
-#      if (input$tripsacum == "Tripsacum") {
-#        Trip1 <- Trip1
-#      }else Trip1 <- NA
-#  })
-  
-  #Para la tabla en csv 
-#  output$downloadData <- downloadHandler(
-#    filename = function() { paste("Tabla", '.csv', sep = '') },
-#    content = function(file) {
-#      write.csv(points(), file)
-#    }
-#  )
   
   #P el mapa en leaflet
   output$mymap1 <- renderLeaflet(
@@ -99,7 +70,7 @@ shinyServer(function(input, output, session) {
     #         brewer.pal(10,"Set3"),brewer.pal(10,"Spectral"),brewer.pal(10,"PiYG"),brewer.pal(7,"BrBG"))
     TTT <- c(brewer.pal(8,"Dark2"))
     
-    
+
  #   acm_defaults <- function(mymap1, x, y) addCircleMarkers(mymap1, x, y, radius = 6, 
 #                    color = "black", fillColor = "orange", fillOpacity = 1, opacity = 1, 
 #                    weight = 2, stroke = TRUE, layerId = "Selected")
@@ -110,9 +81,9 @@ shinyServer(function(input, output, session) {
     #TTT <- colorNumeric(c(1:64), levels(TableL$Raza_primaria))
     Goldberg <- points()
     
-    Trip2 <- points2()
+    #Trip2 <- points2()
     TT <- paste(Goldberg$Raza_primaria)
-    leaflet(data = Goldberg) %>%
+    leaflet() %>%
       #clearShapes() %>%
       addTiles() %>%
       #clearBounds() %>%  
@@ -122,83 +93,48 @@ shinyServer(function(input, output, session) {
                                                              spiderfyOnMaxZoom = T,
                                                              zoomToBoundsOnClick = T,
                                                              spiderfyDistanceMultiplier = 2), 
-                       popup = paste(sep = " ",
+                      popup = paste(sep = " ",
                                      "Complejo Racial:",Goldberg$Complejo_racial,"<br/>",
                                      "Raza Maiz:",Goldberg$Raza_primaria,"<br/>", 
                                      "Municipio:",Goldberg$Municipio, "<br/>",
                                      "Localidad:",Goldberg$Localidad, "<br/>",
                                      "Periodo:",Goldberg$Periodo, "<br/>",
                                      "Proyecto:",Goldberg$Proyecto, "<br/>")) %>%
-      
-     
-        
-      #addMeasure(primaryLengthUnit = "kilometers", primaryAreaUnit = "hectares",activeColor = '#FF00FF') %>%
-      #addProviderTiles("Esri.WorldTopoMap")
-      
-      
+  
+ #   addCircleMarkers(Parientes2$longitude[!is.na(Parientes2$longitude)], 
+  #    Parientes2$latitude[!is.na(Parientes2$latitude)], 
+  #    weight = 3, radius = 2, color = '#9D7', opacity = 1,
+  #    popup = paste(sep = " ",
+  #                "Taxa:",Parientes2$Taxa,"<br/>", 
+  #                "Municipio:",Parientes2$Municipio, "<br/>",
+  #                "Proyecto:",Parientes2$Fuente)) %>%
       
       addProviderTiles("CartoDB.Positron")
-    # addLayersControl(
-    #    overlayGroups = names(Teo1),
-    #    options = layersControlOptions(collapsed = FALSE))
     
   })
-  
-#  observeEvent({# update the map markers and view on map clicks
-#    proxy2 <- leafletProxy("mymap1")
-#    #proxy2 %>% clearControls()
-#    # Trip2 <- points2()
-#    if (input$tripsacum) {
-#      proxy2 %>%
-#        addCircleMarkers(Trip1$long, Trip1$lat, weight = 3, radius = 1, 
-#                         color = '#FA5', opacity = 1, stroke = T,
-#                         popup = paste(sep = " ",
-#                                       "Raza Maiz:",Trip1$Taxa,"<br/>", 
-#                                       "Municipio:",Trip1$Municipio))  
-#    } 
-#  })
-  
+ 
   observe({
-    proxy1 <- leafletProxy("mymap1")
-    #proxy1 %>% clearControls()
-    # Teo2 <- points1()
-    if (input$tripsacum) {
-      Trip2 <- Trip1
-      proxy1 %>%
-        #Teo1 == Teocintle
-        addCircleMarkers(Trip2$long, Trip2$lat, weight = 3, radius = 1, color = '#FA5', 
-                         opacity = 1,
-                         popup = paste(sep = " ",
-                                       "Taxa:",Trip2$Taxa,"<br/>", 
-                                       #"Municipio:",Trip2$Municipio, "<br/>",
-                                       "Municipio:",Trip2$Municipio))
-      
-    }
     
-  })
-  
-  observe({
-    proxy2 <- leafletProxy("mymap1")
-    #proxy1 %>% clearControls()
-   # Teo2 <- points1()
-    if (input$teocintle) {
-      Teo2 <- Teo1
-      proxy2 %>%
+    #Parientes2 <- points1()
+    Parientes2 <- Parientes[Parientes$Tipo %in% input$Tipo,]
+    factpal <- colorFactor(c("red", "orange"), Parientes2$Tipo)
+    proxy1 <- leafletProxy("mymap1") %>%
+      clearMarkers() %>%
+      #proxy1 %>%
+        #Parientes2 <- points1()
         #Teo1 == Teocintle
-      addCircleMarkers(Teo2$long, Teo2$lat, weight = 3, radius = 1, color = '#9D7', 
-                       opacity = 1,
-                       popup = paste(sep = " ",
-                                      "Taxa:",Teo2$Taxa,"<br/>", 
-                                     "Municipio:",Teo2$Municipio, "<br/>",
-                                     "Localidad:",Teo2$Localidad))
-    } 
-    #else {
-    #  updateSelectInput(session, input$teocintle, selected = "")
-    #  proxy2 %>% 
-    #   removeMarker("long")
-    #}
-  })
+    addCircleMarkers(Parientes2$longitude[!is.na(Parientes2$longitude)], 
+                     Parientes2$latitude[!is.na(Parientes2$latitude)], 
+                     weight = 3, radius = 3, color = factpal(Parientes2$Tipo), opacity = 0.6,
+                     popup = paste(sep = " ",
+                                   "Taxa:",Parientes2$Taxa,"<br/>", 
+                                   "Estado:",Parientes2$Estado, "<br/>",
+                                   "Municipio:",Parientes2$Municipio, "<br/>",
+                                   "Proyecto:",Parientes2$Fuente))
+    })
+    
   
+
   ############
   #Para ventana 2 Imagenes y Grafico cleveland Plot
   points1 <- reactive({
@@ -206,15 +142,48 @@ shinyServer(function(input, output, session) {
   })
 
   #Para la imagen
-  output$preImage <- renderImage({
+  output$preImage <- renderImage(
+    {
     inorg <- input$Raza_Primaria
-    TableLH <- TableL[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
-    filename <- normalizePath(file.path('./www',
-                              paste(inorg, '.jpg', sep = '')))
+    
+    if (inorg == "Cónico") {
+          inorg <- c("Conico")
+        }else if (inorg == "Chalqueño") {
+          inorg <- c("Chalqueno")
+        }else if (inorg == "Cónico Norteño") {
+          inorg <- c("Conico Norteno")
+        }else if (inorg == "Elotes Cónicos") {
+          inorg <- c("Elotes Conicos")
+        }else if (inorg == "Mixeño") {
+          inorg <- c("Mixeno")
+        }else if (inorg == "Olotón") {
+          inorg <- c("Oloton")
+        }else if (inorg == "Onaveño") {
+          inorg <- c("Onaveno")
+        }else if (inorg == "Palomero Toluqueño") {
+          inorg <- c("Palomero Toluqueno")
+        }else if (inorg == "Quicheño") {
+          inorg <- c("Quicheno")
+        }else if (inorg == "Ratón") {
+          inorg <- c("Raton")
+        }else if (inorg == "Tuxpeño") {
+          inorg <- c("Tuxpeno")
+        }else if (inorg == "Tuxpeño Norteño") {
+          inorg <- c("Tuxpeno Norteno")
+        }else if (inorg == "Uruapeño") {
+          inorg <- c("Uruapeno")
+        }else if (inorg == "Vandeño") {
+          inorg <- c("Vandeno")
+        }else inorg <- inorg
+    
+    
+    #TableLH <- TableL[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
+    filename <- file.path('./www', paste(inorg, '.jpg', sep = ''))
     #Return a list containing the filename and alt text
     list(src = filename,
-         alt = paste("Raza de maíz", input$Raza_Primaria))
-  }, deleteFile = FALSE)
+        # alt = paste("Raza de maíz", inorg))
+         alt = inorg)
+    }, deleteFile = FALSE)
   
   #Para el summary
   # Generate a summary of the dataset ----

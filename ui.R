@@ -82,29 +82,39 @@ diversidad genética del maíz"),
            
             absolutePanel(top = 100, right = 40,
                           
+                          #Por Complejo Racial
+                          selectInput(inputId = "Complejo_racial",
+                                      label = h6("Grupo Racial:"),
+                                      c("All", levels(TableL$Complejo_racial))),
+                          
                           #Raza Primaria
-                          selectInput(inputId = "Raza_primaria",
-                                      label = h6("Raza Primaria:"),
-                                      c("All", levels(TableL$Raza_primaria))),
+                       #   selectInput(inputId = "Raza_primaria",
+                      #                label = h6("Raza Primaria:"),
+                      #                c("All", levels(TableL$Raza_primaria))),
                           #c("All", unique(as.character(TableL$Raza_primaria)))),
                           
-                          #Por Complejo Racial
-                         # selectInput(inputId = "Complejo_racial",
-                        #              label = h6("Grupo Racial:"),
-                        #              c("All", levels(TableL$Complejo_racial))),
                           
                           #Por Estado
                           selectInput(inputId = "Estado",
                                       label = h6("Estado:"),
                                       c("All", levels(TableL$Estado))),
+                        
+                        #Por Estado
+                        selectInput(inputId = "Proyecto",
+                                    label = h6("Proyecto apoyado (ver bibliografía):"),
+                                    c("All", levels(TableL$Proyecto))),
                           
                           # Input: Checkbox Tripsacum
                           
-                          checkboxInput("tripsacum", "Tripsacum", F),
+                       #   checkboxInput("tripsacum", "Tripsacum", F),
                         
                           # Input: Checkbox Teocintle
-                          checkboxInput("teocintle", "Teocintle", F)
+                      #    checkboxInput("teocintle", "Teocintle", F),
+                        
+                        checkboxGroupInput(inputId = "Tipo", label = h6("Parientes Silvestres:"),
+                                           choices = levels(Parientes$Tipo), selected = NULL)
                           
+                      #levels(Parientes$Tipo)
                           
                          # h6("Descargar los datos seleccionados"),
                         #  h6("en la visualización del mapa"),
@@ -151,7 +161,8 @@ diversidad genética del maíz"),
                              levels(TableL1c$Raza_Primaria)),
                  h4("Conabio"),
                  tags$a(href = "http://www.biodiversidad.gob.mx/genes/proyectoMaices.html", "Proyecto Maices"),
-                # br(),
+                 # br(),
+                 
                 # h6("Descarga de la base de datos"),
                 # tags$a(href = "http://www.biodiversidad.gob.mx/genes/pdf/proyecto/Anexo13_Base%20de%20datos/BaseMaicesNativos.xlsx", "DataBase"),
                  h4("Github:"),
@@ -169,7 +180,7 @@ diversidad genética del maíz"),
                 
                  column(9, wellPanel(
                    h4("Características generales"),
-                   textOutput("summary1"),
+                   h4(textOutput("summary1")),
                    h5("Fuente:", tags$a(href = "https://www.biodiversidad.gob.mx/genes/pdf/proyecto/Anexo6_ReunionesTalleres/Tabla%20razas_marzo%202010.pdf", "Maíces"))
                         )),
                    #column(9, imageOutput('preImage', height = 500, width = 500)),
@@ -191,9 +202,15 @@ tabPanel('Sankey',
              img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
          # Define UI for slider demo application
          
-         h4("Gráfica de Sankey de las Razas de maíces"),
+         h3("Diagrama de Sankey o de Flujo de las razas de maíces en México"),
+         h4("Estos diagramas visualizan la dispersión o distribución de las 
+             razas de maíces. De izquierda a derecha se muestran los distintos ",
+             tags$a(href = "https://www.biodiversidad.gob.mx/usos/maices/razas2012.html", 
+            "complejos raciales"), "que conjuntan distintas razas que se distribuyen
+            en todo el país"),
+        
          br(),
-         h4("...................................... Complejo racial 
+         h4("..................................... Complejo racial 
             ........................................................... Raza de maíz 
             ........................................................................ Estado"),
          br(),
@@ -246,8 +263,8 @@ tabPanel('Sankey',
 
   
 tabPanel('Datos adicionales sobre el maíz',
-         div(img(src = "CONABIO_LOGO_13.JPG", width = "200"), 
-             img(src = "CodiceFlorentino.png", width = "500"), style = "text-align: center;"),
+         div(img(src = "CONABIO_LOGO_13.JPG", width = "100"), 
+             img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
          #div(img(src = "CodiceFlorentino.png", width = "750"), style = "text-align: center;"),
          br(),
          br(),
@@ -256,7 +273,7 @@ tabPanel('Datos adicionales sobre el maíz',
          br(),
          
          column(4, wellPanel(h3("Cronología del maíz en México"),
-                             h5("6200 años del presente (AdP) Guilà Naquitz (Oaxaca)"),
+                             h5("6200 años del presente (AdP) Guilá Naquitz (Oaxaca)"),
                              h5("4500-7000 AdP, Tehuacan (Puebla)"),
                              h5("5000      AdP, Zohapilco (Tlapacoya, México)"),
                              h5("4562      AdP, San Andrés (Tabasco)"),
@@ -334,8 +351,8 @@ tabPanel('Datos adicionales sobre el maíz',
 
 tabPanel('Bibliografía',
          
-         div(img(src = "CONABIO_LOGO_13.JPG", width = "200"), 
-             img(src = "CodiceFlorentino.png", width = "500"), style = "text-align: center;"),
+         div(img(src = "CONABIO_LOGO_13.JPG", width = "100"), 
+             img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
          #div(img(src = "CodiceFlorentino.png", width = "750"), style = "text-align: center;"),
          
          
