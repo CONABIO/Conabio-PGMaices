@@ -1,6 +1,5 @@
 library(shiny)
 library(leaflet)
-library(tidyverse)
 library(RColorBrewer)
 #library(dplyr)
 library(knitr)
@@ -11,136 +10,299 @@ library(ggplot2)
 library(googleVis)
 library(igraph)
 library(scales)
-library(DT)
 #library(dicromat)
 
 # Define server logic for slider examples
-shinyServer(
-  function(input, output, session) {
+shinyServer(function(input, output, session) {
   
-
+  #Para ventana 00
+  
+#  points2 <- reactive({
+#    TableLH <- TableL1c[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
+#  })
+  
+ # output$preImage1 <- renderImage({
+    
+  #  inorg1 <- input$Raza_Primaria
+    ##TableLH <- TableL[TableL$Raza_primaria %in% input$Raza_primaria,]
+  #  filename <- normalizePath(file.path('./www',
+  #                                      paste(inorg1, '.jpg', sep = '')))
+  #  #Return a list containing the filename and alt text
+  #  list(src = filename,
+  #       alt = paste("Raza de maíz", inorg1))
+  #}, deleteFile = FALSE)
+  
+  
+  
   #Ventana 1
   #### For the map in leaflet
   points <- reactive({
     #input$update
-    #Tabla2 <- Tabla2()
+    #TableL <- TableL()
    
-    if (input$Sex != "All") {
-      Tabla2 <- Tabla2[Tabla2$Sex %in% input$Sex,]
-    } else Tabla2 <- Tabla2
+    if (input$Complejo_racial != "All") {
+      TableL <- TableL[TableL$Complejo_racial %in% input$Complejo_racial,]
+    } else TableL <- TableL
     
-    Tabla2 <- Tabla2[c(Tabla2$Age >= input$Age[1] & Tabla2$Age <= input$Age[2]),]
+ #    if (input$Raza_primaria != "All") {
+#      TableL <- TableL[TableL$Raza_primaria %in% input$Raza_primaria,]
+#    }else TableL <- TableL
     
-    if (input$County != "All") {
-      Tabla2 <- Tabla2[Tabla2$County %in% input$County,]
-    }else Tabla2 <- Tabla2
     
-     if (input$Surface_management != "All") {
-      Tabla2 <- Tabla2[Tabla2$Surface_management %in% input$Surface_management,]
-    }else Tabla2 <- Tabla2
+      if (input$Proyecto != "All") {
+        TableL <- TableL[TableL$Proyecto %in% input$Proyecto,]
+      }else TableL <- TableL
     
-      if (input$Corridor != "All") {
-        Tabla2 <- Tabla2[Tabla2$Corridor %in% input$Corridor,]
-      }else Tabla2 <- Tabla2
+    if (input$Estado != "All") {
+      TableL <- TableL[TableL$Estado %in% input$Estado,]
+    }else TableL <- TableL
     
-    if (input$Cause_of_death != "All") {
-      Tabla2 <- Tabla2[Tabla2$Cause_of_death %in% input$Cause_of_death,]
-    }else Tabla2 <- Tabla2
     
   })
  
-  #Para la tabla en csv 
-  output$downloadData <- downloadHandler(
-    filename = function() { paste("Tabla", '.csv', sep = '') },
-    content = function(file) {
-      write.csv(points(), file)
-    }
-  )
+
   
   
   #P el mapa en leaflet
   output$mymap1 <- renderLeaflet(
     {
-      Goldberg <- points()
-      
-        
-      Goldberg$ratingcol <- ifelse(Goldberg$Cause_of_death == "Asphyxia", "#F7FCF0",
-                             ifelse(Goldberg$Cause_of_death == "Blunt Force Injury", "#E0F3DB",
-                              ifelse(Goldberg$Cause_of_death == "Diabetes", "#CCEBC5",
-                               ifelse(Goldberg$Cause_of_death == "Drowning", "#A8DDB5",
-                                ifelse(Goldberg$Cause_of_death == "Drug Overdose", "#7BCCC4",
-                                 ifelse(Goldberg$Cause_of_death == "Exposure", "#D53E4F",
-                                  ifelse(Goldberg$Cause_of_death == "Exsanguination", "#2B8CBE",
-                                   ifelse(Goldberg$Cause_of_death == "Gunshot Wound", "#0868AC",
-                                    ifelse(Goldberg$Cause_of_death == "Heart Disease", "#084081",
-                                     ifelse(Goldberg$Cause_of_death == "Lightning Strike", "#9E0142",
-                            ifelse(Goldberg$Cause_of_death == "Motor Vehicle Accident", "#4EB3D3",
-                             ifelse(Goldberg$Cause_of_death == "Nonviable Fetus", "#F46D43",
-                              ifelse(Goldberg$Cause_of_death == "Not_Reported", "#FDAE61",
-                               ifelse(Goldberg$Cause_of_death == "Other Injury", "#FEE08B",
-                                 ifelse(Goldberg$Cause_of_death == "Other Disease", "#FFFFBF",
-                                  ifelse(Goldberg$Cause_of_death == "Other Injury / Homicide", "#E6F598",
-                                   ifelse(Goldberg$Cause_of_death == "Pending", "#ABDDA4",
-                                    ifelse(Goldberg$Cause_of_death == "Pregnancy Complication", "#66C2A5",
-                                     ifelse(Goldberg$Cause_of_death == "Skeletal Remains", "#1B9E77",
-                                      ifelse(Goldberg$Cause_of_death == "Undetermined", "#5E4FA2", "black")))))))))))))))))))) 
-                                                                                                                      
-      
-     
+    #TTT <- c(brewer.pal(8,"Dark2"),brewer.pal(10,"Paired"),brewer.pal(9,"Set1"),
+    #         brewer.pal(10,"Set3"),brewer.pal(10,"Spectral"),brewer.pal(10,"PiYG"),brewer.pal(7,"BrBG"))
+    TTT <- c(brewer.pal(8,"Dark2"))
     
+
+ #   acm_defaults <- function(mymap1, x, y) addCircleMarkers(mymap1, x, y, radius = 6, 
+#                    color = "black", fillColor = "orange", fillOpacity = 1, opacity = 1, 
+#                    weight = 2, stroke = TRUE, layerId = "Selected")
+    
+    #DDD <- TTT[as.numeric(TableL$Raza_primaria)]
+    #head(TableL$Raza_primaria)
+    #head(DDD)
+    #TTT <- colorNumeric(c(1:64), levels(TableL$Raza_primaria))
+    Goldberg <- points()
+    
+    #Trip2 <- points2()
+    TT <- paste(Goldberg$Raza_primaria)
     leaflet() %>%
+      #clearShapes() %>%
       addTiles() %>%
       #clearBounds() %>%  
-      addCircleMarkers(Goldberg$lng, Goldberg$lat, 
-                       radius = 5, stroke = F, fillOpacity = 0.9, color = Goldberg$ratingcol,
-                       #clusterOptions = markerClusterOptions(showCoverageOnHover = T, 
-                      #                                       spiderfyOnMaxZoom = T,
-                      #                                       zoomToBoundsOnClick = T,
-                      #                                       spiderfyDistanceMultiplier = 2), 
+      addCircleMarkers(Goldberg$longitude, Goldberg$latitude, 
+                       weight = 8, radius = 5, stroke = F, fillOpacity = 0.9, color = sample(TTT,1),
+                       clusterOptions = markerClusterOptions(showCoverageOnHover = T, 
+                                                             spiderfyOnMaxZoom = T,
+                                                             zoomToBoundsOnClick = T,
+                                                             spiderfyDistanceMultiplier = 2), 
                       popup = paste(sep = " ",
-                                     "Sex:",Goldberg$Sex,"<br/>",
-                                     "Age:",Goldberg$Age,"<br/>", 
-                                     "Surface Management:",Goldberg$Surface_management, "<br/>",
-                                     "Corridor:",Goldberg$Corridor, "<br/>",
-                                     "Cause of Death:",Goldberg$Cause_of_death, "<br/>",
-                                     "Estado:",Goldberg$State, "<br/>")) %>%
+                                     "Complejo Racial:",Goldberg$Complejo_racial,"<br/>",
+                                     "Raza Maiz:",Goldberg$Raza_primaria,"<br/>", 
+                                     "Municipio:",Goldberg$Municipio, "<br/>",
+                                     "Localidad:",Goldberg$Localidad, "<br/>",
+                                     "Periodo:",Goldberg$Periodo, "<br/>",
+                                     "Proyecto:",Goldberg$Proyecto, "<br/>")) %>%
   
+ #   addCircleMarkers(Parientes2$longitude[!is.na(Parientes2$longitude)], 
+  #    Parientes2$latitude[!is.na(Parientes2$latitude)], 
+  #    weight = 3, radius = 2, color = '#9D7', opacity = 1,
+  #    popup = paste(sep = " ",
+  #                "Taxa:",Parientes2$Taxa,"<br/>", 
+  #                "Municipio:",Parientes2$Municipio, "<br/>",
+  #                "Proyecto:",Parientes2$Fuente)) %>%
       
       addProviderTiles("CartoDB.Positron")
     
   })
-
+ 
+  observe({
+    
+    #Parientes2 <- points1()
+    Parientes2 <- Parientes[Parientes$Tipo %in% input$Tipo,]
+    factpal <- colorFactor(c("red", "orange"), Parientes2$Tipo)
+    proxy1 <- leafletProxy("mymap1") %>%
+      clearMarkers() %>%
+      #proxy1 %>%
+        #Parientes2 <- points1()
+        #Teo1 == Teocintle
+    addCircleMarkers(Parientes2$longitude[!is.na(Parientes2$longitude)], 
+                     Parientes2$latitude[!is.na(Parientes2$latitude)], 
+                     weight = 3, radius = 3, color = factpal(Parientes2$Tipo), opacity = 0.6,
+                     popup = paste(sep = " ",
+                                   "Taxa:",Parientes2$Taxa,"<br/>", 
+                                   "Estado:",Parientes2$Estado, "<br/>",
+                                   "Municipio:",Parientes2$Municipio, "<br/>",
+                                   "Proyecto:",Parientes2$Fuente))
+    })
+    
   
-  points11 <- reactive({
-#    #input$update
-#    #Tabla2 <- Tabla2()
-    if (input$Variable11 == "Age") {
-    Tabla2 <- data.frame(Tabla2.1[Tabla2.1$Age < 98,c(4,7,14)])
-    }else TablaLL <- data.frame(Tabla2.1[, c(input$Variable11)], Tabla2.1[,c(7,14)])
-    
-    #TablaLL <- data.frame(Tabla2.1[, c(input$Variable11)], Tabla2.1[,c(7,14)])
-    #names(TablaLL)[1] <- c("variable")
-  })
-    
-  ############
 
-    output$plot11 <- renderPlotly({
+  ############
+  #Para ventana 2 Imagenes y Grafico cleveland Plot
+  points1 <- reactive({
+      TableLH <- TableL1c[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
+  })
+
+  #Para la imagen
+  output$preImage <- renderImage(
+    {
+    inorg <- input$Raza_Primaria
     
-    TablaLL1 <- points11()
-   ggBar <- ggplot(TablaLL1 ) +
-      geom_bar(aes(x = reorder(TablaLL1[,1], TablaLL1[,3]), y = TablaLL1[,3], fill = TablaLL1[,2]), stat = "identity") +
-      coord_flip() +
-     labs(title = "", x = "", y = "Total number") +
-     guides(fill = guide_legend(title = "Cause of death"))
-      theme_bw()
+    if (inorg == "Cónico") {
+          inorg <- c("Conico")
+        }else if (inorg == "Chalqueño") {
+          inorg <- c("Chalqueno")
+        }else if (inorg == "Cónico Norteño") {
+          inorg <- c("Conico Norteno")
+        }else if (inorg == "Elotes Cónicos") {
+          inorg <- c("Elotes Conicos")
+        }else if (inorg == "Mixeño") {
+          inorg <- c("Mixeno")
+        }else if (inorg == "Olotón") {
+          inorg <- c("Oloton")
+        }else if (inorg == "Onaveño") {
+          inorg <- c("Onaveno")
+        }else if (inorg == "Palomero Toluqueño") {
+          inorg <- c("Palomero Toluqueno")
+        }else if (inorg == "Quicheño") {
+          inorg <- c("Quicheno")
+        }else if (inorg == "Ratón") {
+          inorg <- c("Raton")
+        }else if (inorg == "Tuxpeño") {
+          inorg <- c("Tuxpeno")
+        }else if (inorg == "Tuxpeño Norteño") {
+          inorg <- c("Tuxpeno Norteno")
+        }else if (inorg == "Uruapeño") {
+          inorg <- c("Uruapeno")
+        }else if (inorg == "Vandeño") {
+          inorg <- c("Vandeno")
+        }else inorg <- inorg
     
-    ggBar
     
+    #TableLH <- TableL[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
+    filename <- file.path('./www', paste(inorg, '.jpg', sep = ''))
+    #Return a list containing the filename and alt text
+    list(src = filename,
+        # alt = paste("Raza de maíz", inorg))
+         alt = inorg)
+    }, deleteFile = FALSE)
+  
+  #Para el summary
+  # Generate a summary of the dataset ----
+  output$summary1 <- renderPrint({
+    inorg <- input$Raza_Primaria
+    Anexo7 <- Anexo6 %>%
+      dplyr::filter(Raza_Primaria == inorg) %>%
+      dplyr::select(Informacion1)
+    
+    
+    print(Anexo7[1,], max.levels = 0, justify = c("right"), zero.print = ".")
+    #dataset <- datasetInput()
+    #summary(dataset)
+  })
+  #Para la gráfica
+  
+  output$plot11 <- renderPlotly({
+    #newData<-TablaVal
+    newData <- points1()
+    ### para la figura
+    #names(newData)
+    LL <- ggplot(newData, aes(x = Val1, y = reorder(Estado, Val1)), size = 0.2) +
+      # use a larger dot
+      geom_segment(aes(yend = Estado, xend = 0)) +
+      # plot the n points and color them
+      geom_point(size = 3, color = "red", shape = 15) +
+      labs(title = "", x = "No. Registros", y = "Estados")
+      #theme_bw() +
+      #coord_flip()
+    LL <- LL + theme(axis.text.x = element_blank(),axis.ticks = element_blank(),
+                     #panel.grid.minor. = element_blank(),
+                     #panel.grid.major = element_line(colour = "black", linetype = "dotted"),
+                     panel.grid.minor.x = element_blank(),
+                     panel.grid.major.x = element_blank(),
+                     axis.title = element_text(size = 14,face = "bold")) +
+      theme(legend.title = element_blank())
+    
+    #LL
     #LL+geom_text(aes(label=newData$Mountain), 
     #                    color="gray20", size=1)
-    gg <- ggplotly(ggBar)
+    gg <- plotly::ggplotly(LL)
     gg
     
   })
-
+  ###########
+  #Ventana 2.1 Sankey Plot
+  
+  points2 <- reactive({
+ 
+       #input$update
+  #  if (input$Raza_primarias != "All") {
+  #    TableL2 <- TableL2[TableL2$Raza_primaria %in% input$Raza_primarias,]
+  #  }else TableL2 <- TableL2
+    
+  # if (input$Complejo_racials != "All") {
+  #    TableL2 <- TableL2[TableL2$Complejo_racial %in% input$Complejo_racials,]
+  #  }else TableL2 <- TableL2
+    
+    if (input$Estados != "All") {
+      TableL2 <- TableL2[TableL2$Estado %in% input$Estados,]
+    }else TableL2 <- TableL2
+    
+  })
+  
+  Richard1 <- reactive({
+    TableL22 <- points2()
+    
+    
+    #attach(TableL22)
+    #TableLJJ <- aggregate(Val1 ~ Complejo_racial + Estado , FUN = sum, na.rm = T)
+    #TableLJJF <- aggregate(Val1 ~ Complejo_racial + Raza_primaria, FUN = sum, na.rm = T)
+    
+    TableLJJ <- aggregate(TableL22$Val1 ~ TableL22$Raza_primaria + TableL22$Estado , FUN = sum, na.rm = T)
+    TableLJJF <- aggregate(TableL22$Val1 ~ TableL22$Raza_primaria + TableL22$Complejo_racial, FUN = sum, na.rm = T)
+    
+    #TableL1b <- aggregate(TableL1[,17], by = list(Raza_Primaria,Estado), FUN = sum, na.rm = T)
+    head(TableLJJ)
+    names(TableLJJ)[1] <- c("origin")
+    names(TableLJJ)[2] <- c("visit")
+    names(TableLJJ)[3] <- c("Val1")
+    head(TableLJJF)
+    names(TableLJJF)[2] <- c("origin")
+    names(TableLJJF)[1] <- c("visit")
+    names(TableLJJF)[3] <- c("Val1")
+    #detach(TableL22)
+    
+    Katcha <- rbind(TableLJJ,TableLJJF)
+  })
+  
+  
+  
+  #P hacer la figura
+  output$Sankeyplot1 <- renderGvis({
+    
+    Feynmann1 <- Richard1()
+    
+    LL34 <- gvisSankey(Feynmann1, from = "origin", to = "visit", weight = "Val1",
+                       options = list(height = 950, width = 950,
+                                      sankey = "{
+                                      link:{color:{fill: 'red', fillOpacity: 0.9}},
+                                      node:{nodePadding: 4, 
+                                      label:{fontSize: 10}, 
+                                      interactivity: true, width: 70},
+                                                }"
+                                      ), chartid = "Sankey"
+                      )
+    
+    #output$sankeyplot <- renderGvis({ gvisSankey(sankeydata(), from = "source", to = "target",
+    #                                            weight = "value", options = list( width = 1200, height = 600, 
+    #                                        sankey = "{
+    #                                        link: {color: { fill: 'grey100' } }, 
+    #                                        node: { width: 40, color: { fill: '#a61d4c' },
+    #                                        label: { fontName: 'Calibri', fontSize: 12, 
+    #                                        color: '#871b47'} }}" ), chartid = "Sankey" )})
+    
+    #plot(LL34)
+    return(LL34)
+    
+  })
+  
+  
 })
