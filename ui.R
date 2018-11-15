@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyjs)
 library(leaflet)
 library(knitr)
 library(plotly)
@@ -84,24 +85,30 @@ diversidad genética del maíz"),
                           
                           #Por Complejo Racial
                           selectInput(inputId = "Complejo_racial",
-                                      label = h6("Grupo Racial:"),
-                                      c("All", levels(TableL$Complejo_racial))),
+                                      label = "Grupo Racial:",
+                                      c("All", levels(TableL$Complejo_racial))
+                                      ),
                           
+                         # bsTooltip("Complejo_racial", "Enter a community. The menu will filter as you type. You may also select a community using the map.", "top", options = list(container = "body")),
                           #Raza Primaria
-                       #   selectInput(inputId = "Raza_primaria",
-                      #                label = h6("Raza Primaria:"),
-                      #                c("All", levels(TableL$Raza_primaria))),
+                          selectInput(inputId = "Raza_primaria",
+                                      label = h6("Raza Primaria:"),
+                                       c("All", levels(TableL$Raza_primaria))
+                                      #choices = "",
+                                      #selected = ""
+                                      ),
+                            
                           #c("All", unique(as.character(TableL$Raza_primaria)))),
                           
                           
                           #Por Estado
                           selectInput(inputId = "Estado",
-                                      label = h6("Estado:"),
+                                      label = "Estado:",
                                       c("All", levels(TableL$Estado))),
                         
                         #Por Estado
                         selectInput(inputId = "Proyecto",
-                                    label = h6("Proyecto apoyado (ver bibliografía):"),
+                                    label = "Proyecto apoyado (ver bibliografía):",
                                     c("All", levels(TableL$Proyecto))),
                           
                           # Input: Checkbox Tripsacum

@@ -11,7 +11,7 @@ library(dplyr)
 #library(ggplot2movies)
 
 #For Mac
- #setwd("~/Dropbox/GitHub/Conabio-PGMaices")
+# setwd("~/Dropbox/GitHub/Conabio-PGMaices")
 
 #TableP<-read.table("~/Dropbox/JANO/2016/Conabio/Github/shiny_maiz/RawData.txt", head=T, sep="\t")
 dir()
@@ -25,8 +25,12 @@ TTabla <- TableP %>%
   dplyr::filter(!is.na(Latitud)) %>%
   dplyr::filter(Estado != "ND") %>%
   dplyr::filter(Raza_primaria != "ND")
-
+  #dplyr::filter(Complejo_racial != "No asociada a un grupo racial")
+TTabla
+dim(TTabla)
+TTabla <- droplevels.data.frame(TTabla)
 levels(TTabla$Estado)
+levels(TTabla$Complejo_racial)
 dim(TTabla)
 names(TTabla)
 TTabla$Anhio_Colecta <- base::as.factor(TTabla$Anhio_Colecta)
@@ -42,7 +46,7 @@ levels(TTabla$Raza_primaria)
 names(TTabla)
 TTabla <- TTabla %>%
   dplyr::mutate(Estado = revalue(Estado,c("AGUASCALIENTES" = "Aguascalientes"))) %>%
-  dplyr::mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA" = "Baja California"))) %>%
+  #dplyr::mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA" = "Baja California"))) %>%
   dplyr::mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA SUR" = "Baja California Sur"))) %>%
   dplyr::mutate(Estado = revalue(Estado,c("CAMPECHE" = "Campeche"))) %>%
   dplyr::mutate(Estado = revalue(Estado,c("CHIAPAS" = "Chiapas"))) %>%
@@ -78,22 +82,66 @@ TTabla <- TTabla %>%
   dplyr::mutate(Raza_primaria = revalue(Raza_primaria,c("Nal-Tel de Altura" = "Nal-tel de Altura"))) %>%
   dplyr::mutate(Raza_primaria = revalue(Raza_primaria,c("Complejo Serrano de Jalisco" = "Serrano de Jalisco")))
 
- 
+summary(TTabla$Complejo_racial) 
+#TTabla <- droplevels(TTabla$Complejo_racial)
 names(TTabla)
 head(TTabla)
 summary(TTabla)
 names(TTabla)[20] <- c("longitude")
 names(TTabla)[21] <- c("latitude")
+head(TTabla)
+
+
 
 dim(TTabla)
 nrow(TTabla)
 
 #Ventana 1 Mapa
 TableL <- TTabla
-#TableL$Periodo <- as.character(TableL$Periodo)
-str(TableL$Periodo)
 
-names(TableL)
+RatingCol <- as.character(TableL$Raza_primaria)
+
+TableL <- data.frame(TableL, RatingCol)
+#dim(TableL)
+#names(TableL)[32] <- c("RatingCol")
+head(TableL)
+summary(TableL$RatingCol)
+TableL <- TableL %>%
+  #Conicos
+  dplyr::mutate(RatingCol = revalue(RatingCol,c("Arrocillo Amarillo" = "#00441b", "Cacahuacintle" = "#006d2c",
+                                                "Chalqueño" = "#238b45", "Cónico" = "#41ae76", "Cónico Norteño" = "#66c2a4",
+                                                "Dulce" = "#99d8c9", "Elotes Cónicos" = "#004529", "Mixteco" = "#006837",
+                                                "Mushito" = "#238443", "Negrito" = "#41ab5d", "Palomero de Chihuahua" = "#78c679",
+                                                "Palomero de Jalisco" = "#addd8e", "Palomero Toluqueño" = "#d9f0a3", "Uruapeño" = "#f7fcb9"))) %>%
+    #Chapalotes
+  dplyr::mutate(RatingCol = revalue(RatingCol,c("Chapalote" = "#0868ac", "Dulcillo del Noroeste" = "#2b8cde",
+                                                "Elotero de Sinaloa" = "#4eb3d3", "Reventador" = "#7bccc4"))) %>%
+  #Tropicales precoces
+  dplyr::mutate(RatingCol = revalue(RatingCol,c("Conejo" = "#4d004b", "Nal-tel" = "#810f7c", "Ratón" = "#88419d",
+                                                "Zapalote Chico" = "#8c6bb1"))) %>%
+  #Ocho hileras
+  dplyr::mutate(RatingCol = revalue(RatingCol,c("Ancho" = "#7f0000", "Blando" = "#b30000", "Bofo" = "#d7301f",
+                                                "Bolita" = "#ef6548", "Elotes Occidentales" = "#fc8d59",
+                                                "Harinoso de Ocho" = "#fdbb84", "Jala" = "#662506", "Onaveño" = "#993404",
+                                                "Tablilla de Ocho" = "#cc4c02", "Tabloncillo" = "#ec7014", "Tabloncillo Perla" = "#fe9929",
+                                                "Zamorano Amarillo" = "#fec44f"))) %>%
+  #Sierra de Chihuahua
+  dplyr::mutate(RatingCol = revalue(RatingCol,c("Apachito" = "#67001f", "Azul" = "#980043", "Serrano de Jalisco" = "#ce1256",
+                                                "Cristalino de Chihuahua" = "#e7298a", "Gordo" = "#df65b0", "Mountain Yellow" = "#c994c7"))) %>%
+  #Maduración tardía
+  dplyr::mutate(RatingCol = revalue(RatingCol,c( "Comiteco" = "#081d58", "Coscomatepec" = "#253494", "Dzit Bacal" = "#225ea8", "Mixeño" = "#1d91c0",
+                                                 "Motozinteco" = "#41b6c4",  "Negro de Chimaltenango" = "#7fcdbb", "Olotillo" = "#2171b5",
+                                                 "Olotón" = "#4292c6", "Quicheño" = "#6baed6", "Serrano" = "#9ecae1",
+                                                 "Serrano Mixe" = "#c6dbef", "Tehua" = "#deebf7"))) %>%
+  #Dentados Tropicales
+  dplyr::mutate(RatingCol = revalue(RatingCol,c("Celaya" = "#67000d", "Chiquito" = "#a50f15", "Choapaneco" = "#cb181d",
+                                                "Cubano Amarillo" = "#ef3b2c", "Nal-tel de Altura" = "#fb6a4a",
+                                                "Pepitilla" = "#fc9272", "Tepecintle" = "#fcbba1", "Tuxpeño" = "#fed976",
+                                                "Tuxpeño Norteño" = "#bd0026", "Vandeño" = "#e31a1c", 
+                                                "Zapalote Grande" = "#fc4e2a")))
+  
+
+dim(TableL)
 str(TableL)
 #Ventana 2 Foto y Cleveland Plot
 TableL1 <- TTabla
@@ -116,7 +164,7 @@ head(TableL1a)
 
 TableL1c <- TableL1a
 
-
+head(TTabla)
 #Ventana 3 StrucPlot
 Val1 <- rep(1, nrow(TTabla))
 TableLL <- data.frame(TTabla, Val1)
@@ -130,7 +178,7 @@ Val1 <- rep(1, nrow(TableL))
 TableL1 <- data.frame(TableL,Val1)
 names(TableL1)
 
-TableL2 <- TableL1[,c(27,28,17,31)]
+TableL2 <- TableL1[,c(27,28,17,32)]
 
 
 #TablaPP <- select_all(TableL, Raza_primaria)

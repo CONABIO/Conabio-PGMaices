@@ -31,68 +31,67 @@ shinyServer(function(input, output, session) {
   #  list(src = filename,
   #       alt = paste("Raza de maíz", inorg1))
   #}, deleteFile = FALSE)
-  
-  
+
+  observeEvent(
+    input$Complejo_racial,
+    updateSelectInput(session, "Raza_primaria", "Raza Primaria:", 
+                      choices = c("All", levels(droplevels(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial]))))
+    # toggle(condition = input$Raza_primaria, selector = input$Complejo_racial != "All")
+    
+  )  
   
   #Ventana 1
   #### For the map in leaflet
   points <- reactive({
     #input$update
     #TableL <- TableL()
-   
+ 
     if (input$Complejo_racial != "All") {
-      TableL <- TableL[TableL$Complejo_racial %in% input$Complejo_racial,]
-    } else TableL <- TableL
+        TableL <- TableL[TableL$Complejo_racial %in% input$Complejo_racial,]
+      } else TableL <- TableL
     
- #    if (input$Raza_primaria != "All") {
-#      TableL <- TableL[TableL$Raza_primaria %in% input$Raza_primaria,]
-#    }else TableL <- TableL
-    
+     if (input$Raza_primaria != "All") {
+       #TableL <- TableL[TableL$Complejo_racial %in% input$Complejo_racial,]
+        TableL <- TableL[TableL$Raza_primaria %in% input$Raza_primaria,]
+      } else TableL <- TableL
     
       if (input$Proyecto != "All") {
         TableL <- TableL[TableL$Proyecto %in% input$Proyecto,]
-      }else TableL <- TableL
+      } else TableL <- TableL
     
-    if (input$Estado != "All") {
-      TableL <- TableL[TableL$Estado %in% input$Estado,]
-    }else TableL <- TableL
+      if (input$Estado != "All") {
+        TableL <- TableL[TableL$Estado %in% input$Estado,]
+      } else TableL <- TableL
     
     
   })
  
 
   
-  
+ #head(Parientes)
+ #validateCoords(Parientes$longitude, Parientes$latitude, mode = c("point"))
+ 
   #P el mapa en leaflet
   output$mymap1 <- renderLeaflet(
     {
-    #TTT <- c(brewer.pal(8,"Dark2"),brewer.pal(10,"Paired"),brewer.pal(9,"Set1"),
-    #         brewer.pal(10,"Set3"),brewer.pal(10,"Spectral"),brewer.pal(10,"PiYG"),brewer.pal(7,"BrBG"))
-    TTT <- c(brewer.pal(8,"Dark2"))
-    
-
- #   acm_defaults <- function(mymap1, x, y) addCircleMarkers(mymap1, x, y, radius = 6, 
-#                    color = "black", fillColor = "orange", fillOpacity = 1, opacity = 1, 
-#                    weight = 2, stroke = TRUE, layerId = "Selected")
-    
-    #DDD <- TTT[as.numeric(TableL$Raza_primaria)]
-    #head(TableL$Raza_primaria)
-    #head(DDD)
-    #TTT <- colorNumeric(c(1:64), levels(TableL$Raza_primaria))
+  
+      Parientes2 <- Parientes[Parientes$Tipo %in% input$Tipo,]
+      factpal <- colorFactor(c("red", "orange"), Parientes2$Tipo)
+      
     Goldberg <- points()
-    
-    #Trip2 <- points2()
+ 
     TT <- paste(Goldberg$Raza_primaria)
     leaflet() %>%
       #clearShapes() %>%
       addTiles() %>%
+      #clearMarkers() %>%
       #clearBounds() %>%  
       addCircleMarkers(Goldberg$longitude, Goldberg$latitude, 
-                       weight = 8, radius = 5, stroke = F, fillOpacity = 0.9, color = sample(TTT,1),
-                       clusterOptions = markerClusterOptions(showCoverageOnHover = T, 
-                                                             spiderfyOnMaxZoom = T,
-                                                             zoomToBoundsOnClick = T,
-                                                             spiderfyDistanceMultiplier = 2), 
+                       weight = 8, radius = 5, stroke = F, fillOpacity = 0.9, color = Goldberg$RatingCol,
+                    #   clusterOptions = markerClusterOptions(showCoverageOnHover = T, 
+                    #                                         spiderfyOnMaxZoom = T,
+                    #                                         zoomToBoundsOnClick = T,
+                    #                                         spiderfyDistanceMultiplier = 2), 
                       popup = paste(sep = " ",
                                      "Complejo Racial:",Goldberg$Complejo_racial,"<br/>",
                                      "Raza Maiz:",Goldberg$Raza_primaria,"<br/>", 
@@ -100,39 +99,53 @@ shinyServer(function(input, output, session) {
                                      "Localidad:",Goldberg$Localidad, "<br/>",
                                      "Periodo:",Goldberg$Periodo, "<br/>",
                                      "Proyecto:",Goldberg$Proyecto, "<br/>")) %>%
-  
- #   addCircleMarkers(Parientes2$longitude[!is.na(Parientes2$longitude)], 
-  #    Parientes2$latitude[!is.na(Parientes2$latitude)], 
-  #    weight = 3, radius = 2, color = '#9D7', opacity = 1,
-  #    popup = paste(sep = " ",
-  #                "Taxa:",Parientes2$Taxa,"<br/>", 
-  #                "Municipio:",Parientes2$Municipio, "<br/>",
-  #                "Proyecto:",Parientes2$Fuente)) %>%
+      
+    
+      addCircleMarkers(lng = Parientes2$longitude[!is.na(Parientes2$longitude)], 
+                       lat = Parientes2$latitude[!is.na(Parientes2$latitude)], 
+                       weight = 3, radius = 3, color = factpal(Parientes2$Tipo), opacity = 0.6,
+                       popup = paste(sep = " ",
+                                     "Taxa:",Parientes2$Taxa,"<br/>", 
+                                     "Estado:",Parientes2$Estado, "<br/>",
+                                     "Municipio:",Parientes2$Municipio, "<br/>",
+                                     "Proyecto:",Parientes2$Fuente), group = "Parientes") %>%
+    
       
       addProviderTiles("CartoDB.Positron")
     
-  })
+    }) 
  
-  observe({
+  
+ observe({
     
-    #Parientes2 <- points1()
-    Parientes2 <- Parientes[Parientes$Tipo %in% input$Tipo,]
-    factpal <- colorFactor(c("red", "orange"), Parientes2$Tipo)
-    proxy1 <- leafletProxy("mymap1") %>%
-      clearMarkers() %>%
-      #proxy1 %>%
-        #Parientes2 <- points1()
-        #Teo1 == Teocintle
-    addCircleMarkers(Parientes2$longitude[!is.na(Parientes2$longitude)], 
-                     Parientes2$latitude[!is.na(Parientes2$latitude)], 
+  
+    
+  Parientes2 <- Parientes[Parientes$Tipo %in% input$Tipo,]
+  factpal <- colorFactor(c("red", "orange"), Parientes2$Tipo)
+  proxy1 <- leafletProxy("mymap1" ) %>%
+  
+    addCircleMarkers(lng = Parientes2$longitude[!is.na(Parientes2$longitude)], 
+                     lat = Parientes2$latitude[!is.na(Parientes2$latitude)], 
                      weight = 3, radius = 3, color = factpal(Parientes2$Tipo), opacity = 0.6,
                      popup = paste(sep = " ",
                                    "Taxa:",Parientes2$Taxa,"<br/>", 
                                    "Estado:",Parientes2$Estado, "<br/>",
                                    "Municipio:",Parientes2$Municipio, "<br/>",
-                                   "Proyecto:",Parientes2$Fuente))
-    })
+                                   "Proyecto:",Parientes2$Fuente), group = "Parientes"
+                     )
     
+})
+  
+ 
+ 
+ #Momo1 %>%  hideGroup("Parientes")
+   
+  
+  
+  
+  
+ # Parientes2 <- Parientes[Parientes$Tipo %in% input$Tipo,] %>%
+ 
   
 
   ############
