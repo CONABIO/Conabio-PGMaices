@@ -32,13 +32,33 @@ shinyServer(function(input, output, session) {
   #       alt = paste("Raza de maíz", inorg1))
   #}, deleteFile = FALSE)
 
+#  observeEvent(
+#    input$Complejo_racial,
+#    updateSelectInput(session, "Raza_primaria", "Raza Primaria:", 
+#                      choices = c("All", levels(droplevels(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial]))))
+#    # toggle(condition = input$Raza_primaria, selector = input$Complejo_racial != "All")
+#    
+#  )
+  
+  
+  
   observeEvent(
-    input$Complejo_racial,
-    updateSelectInput(session, "Raza_primaria", "Raza Primaria:", 
-                      choices = c("All", levels(droplevels(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial]))))
-    # toggle(condition = input$Raza_primaria, selector = input$Complejo_racial != "All")
-    
-  )  
+    input$Complejo_racial,  if (input$Complejo_racial != "All") {
+      updateSelectInput(session, inputId = "Raza_primaria", label = "Raza Primaria:", 
+                        choice = c("All" ,levels(droplevels(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial]))))
+      # toggle("hideme") 
+    } else updateSelectInput(session, inputId = "Raza_primaria", label = "Raza Primaria:", 
+                             choice = c("All", levels(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial]))))
+  
+  
+  
+ # observeEvent(
+#    input$Estado,  if (input$Estado != "All") {
+#      updateSelectInput(session, inputId = "Especie", label = "Especie:", 
+#                        choice = c("All" ,levels(droplevels(Mex3$Especie[Mex3$Estado %in% input$Estado]))))
+#      # toggle("hideme") 
+#    } else updateSelectInput(session, inputId = "Especie", label = "Especie:", 
+#                             choice = c("All", levels(Mex3$Especie[Mex3$Estado %in% input$Estado]))))
   
   #Ventana 1
   #### For the map in leaflet
