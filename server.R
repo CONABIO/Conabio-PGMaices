@@ -15,33 +15,7 @@ library(scales)
 # Define server logic for slider examples
 shinyServer(function(input, output, session) {
   
-  #Para ventana 00
-  
-#  points2 <- reactive({
-#    TableLH <- TableL1c[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
-#  })
-  
- # output$preImage1 <- renderImage({
-    
-  #  inorg1 <- input$Raza_Primaria
-    ##TableLH <- TableL[TableL$Raza_primaria %in% input$Raza_primaria,]
-  #  filename <- normalizePath(file.path('./www',
-  #                                      paste(inorg1, '.jpg', sep = '')))
-  #  #Return a list containing the filename and alt text
-  #  list(src = filename,
-  #       alt = paste("Raza de maíz", inorg1))
-  #}, deleteFile = FALSE)
 
-#  observeEvent(
-#    input$Complejo_racial,
-#    updateSelectInput(session, "Raza_primaria", "Raza Primaria:", 
-#                      choices = c("All", levels(droplevels(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial]))))
-#    # toggle(condition = input$Raza_primaria, selector = input$Complejo_racial != "All")
-#    
-#  )
-  
-  
-  
   observeEvent(
     input$Complejo_racial,  if (input$Complejo_racial != "All") {
       updateSelectInput(session, inputId = "Raza_primaria", label = "Raza Primaria:", 
@@ -50,16 +24,7 @@ shinyServer(function(input, output, session) {
     } else updateSelectInput(session, inputId = "Raza_primaria", label = "Raza Primaria:", 
                              choice = c("All", levels(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial]))))
   
-  
-  
- # observeEvent(
-#    input$Estado,  if (input$Estado != "All") {
-#      updateSelectInput(session, inputId = "Especie", label = "Especie:", 
-#                        choice = c("All" ,levels(droplevels(Mex3$Especie[Mex3$Estado %in% input$Estado]))))
-#      # toggle("hideme") 
-#    } else updateSelectInput(session, inputId = "Especie", label = "Especie:", 
-#                             choice = c("All", levels(Mex3$Especie[Mex3$Estado %in% input$Estado]))))
-  
+
   #Ventana 1
   #### For the map in leaflet
   points <- reactive({

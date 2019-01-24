@@ -5,9 +5,9 @@ account: conabio
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 360666
-bundleId: 1807211
+bundleId: 1833281
 url: https://conabio.shinyapps.io/conabio-pgmaices1/
-when: 1547139180.92459
+when: 1548297907.66824
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: PGM_update2017.xlsx|RawData.csv

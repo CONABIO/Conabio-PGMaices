@@ -13,6 +13,7 @@ library(shinydashboard)
 #library(ggplot2movies)
 
 shinyUI(navbarPage(
+  theme = shinytheme("sandstone"),
   title = "Proyecto Global de  Maíces", id = "nav",
 
   #Introducción
@@ -213,13 +214,11 @@ tabPanel('Sankey',
          h4("Estos diagramas visualizan la dispersión o distribución de las 
              razas de maíces. De izquierda a derecha se muestran los distintos ",
              tags$a(href = "https://www.biodiversidad.gob.mx/usos/maices/razas2012.html", 
-            "complejos raciales"), "que conjuntan distintas razas que se distribuyen
-            en todo el país"),
+            "complejos raciales"), "que conjuntan distintas razas (en el centro) que se distribuyen
+            en los distintos estados del país (derecha)"),
         
-         br(),
-         h4("..................................... Complejo racial 
-            ........................................................... Raza de maíz 
-            ........................................................................ Estado"),
+        # br(),
+
          br(),
          #column(5, wellPanel(h4("FDFDFDFDF"))),
          br(),
