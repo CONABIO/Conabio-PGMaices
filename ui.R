@@ -8,10 +8,6 @@ library(shinythemes)
 library(shinydashboard)
 
 
-
-#runApp(system.file("shiny/", package = "googleVis"))
-#library(ggplot2movies)
-
 shinyUI(navbarPage(
   theme = shinytheme("sandstone"),
   title = "Proyecto Global de  Maíces", id = "nav",
@@ -19,9 +15,8 @@ shinyUI(navbarPage(
   #Introducción
     tabPanel('Introducción',
              
-             div(img(src = "CONABIO_LOGO_13.JPG", width = "100"), 
+             div(img(src = "CONABIO_LOGO_13.png", width = "200"), 
                  img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
-             #div(img(src = "CodiceFlorentino.png", width = "750"), style = "text-align: center;"),
              
 
         h4("El objetivo del", tags$a(href = "http://www.biodiversidad.gob.mx/genes/proyectoMaices.html", 
@@ -57,9 +52,7 @@ diversidad genética del maíz"),
                                  h5("Gráfica de Sankey"),
                                  h5("Datos adicionales sobre el maíz"),
                                  h5("Bibliografía del proyecto")       
-                                  #div(img(src = "Mapa.png", style = "display:block; margin-left: auto; margin-right: auto;",width = "400", height = "300")),
-                                 #div(img(src = "Mapa1.png", style = "display:block; margin-left: auto; margin-right: auto;",width = "300", height = "300"))
-                                 )),
+                                     )),
              div(img(src = "Quelites_Florentino.png", width = "400"), 
                  br(),
                  br(),
@@ -67,13 +60,6 @@ diversidad genética del maíz"),
              ), #del tabPanel
  #Ventana 1
     tabPanel("Mapa", 
-        #     div(img(src = "CONABIO_LOGO_13.JPG", width = "200"), 
-        #         img(src = "CodiceFlorentino.png", width = "500"), style = "text-align: center;"),
-            # h4("Proyecto Global de Maíces"),
-          #   div(class = "outer",
-           # Define UI for slider demo application
-           #bootstrapPage(tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
-           
           dashboardBody(
             tags$style(type = "text/css", "#mymap1 {height: calc(100vh - 80px) !important;}"),
             leafletOutput('mymap1', width = "100%", height = "100%")
@@ -90,7 +76,6 @@ diversidad genética del maíz"),
                                       c("All", levels(TableL$Complejo_racial))
                                       ),
                           
-                         # bsTooltip("Complejo_racial", "Enter a community. The menu will filter as you type. You may also select a community using the map.", "top", options = list(container = "body")),
                           #Raza Primaria
                           selectInput(inputId = "Raza_primaria",
                                       label = h6("Raza Primaria:"),
@@ -99,7 +84,6 @@ diversidad genética del maíz"),
                                       #selected = ""
                                       ),
                             
-                          #c("All", unique(as.character(TableL$Raza_primaria)))),
                           
                           
                           #Por Estado
@@ -112,24 +96,9 @@ diversidad genética del maíz"),
                                     label = "Proyecto apoyado (ver bibliografía):",
                                     c("All", levels(TableL$Proyecto))),
                           
-                          # Input: Checkbox Tripsacum
-                          
-                       #   checkboxInput("tripsacum", "Tripsacum", F),
-                        
-                          # Input: Checkbox Teocintle
-                      #    checkboxInput("teocintle", "Teocintle", F),
-                        
                         checkboxGroupInput(inputId = "Tipo", label = h6("Parientes Silvestres:"),
                                            choices = levels(Parientes$Tipo), selected = NULL)
                           
-                      #levels(Parientes$Tipo)
-                          
-                         # h6("Descargar los datos seleccionados"),
-                        #  h6("en la visualización del mapa"),
-                         # downloadButton('downloadData', 'Descargar (csv)')
-                          
-                    #    checkboxInput("Periodo", label = h6("Período de Colecta:"),
-                    #                choice = levels(TableL$Periodo), selected = levels(TableL$Periodo))
                           
                            ),
             
@@ -143,20 +112,17 @@ diversidad genética del maíz"),
                           h4("Github:"),
                           tags$a(href = "https://github.com/APonce73/Conabio-PGMaices", "Conabio-Maíces"),
                           h5("comentarios:"),
-                          h5("amastretta@conabio.gob.mx"),
-                          h5("aponce73pm@gmail.com")
+                          #h5("amastretta@conabio.gob.mx"),
+                          h5("aponce@conabio.gob.mx")
                           #uiOutput("fens")
                           )
            # )
            ), #parentesis del tabpanel
 #Ventana 2 Fotos Maices
   tabPanel('Maíces',
-           div(img(src = "CONABIO_LOGO_13.JPG", width = "100"), 
+           div(img(src = "CONABIO_LOGO_13.png", width = "200"), 
                img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
-           # Define UI for slider demo application
            shinyUI(fluidPage(
-             #Application title
-             #titlePanel("Proyecto Global de Maíces CONABIO"),
              h4("Razas de maíces"),
              
              sidebarLayout(
@@ -191,7 +157,6 @@ diversidad genética del maíz"),
                    h4(textOutput("summary1")),
                    h5("Fuente:", tags$a(href = "https://www.biodiversidad.gob.mx/genes/pdf/proyecto/Anexo6_ReunionesTalleres/Tabla%20razas_marzo%202010.pdf", "Maíces"))
                         )),
-                   #column(9, imageOutput('preImage', height = 500, width = 500)),
                  column(9, 
                    plotlyOutput("plot11", height = 500, width = 800)
                  )
@@ -206,7 +171,7 @@ diversidad genética del maíz"),
 #Ventana 2.1 Sankeyplot
 
 tabPanel('Sankey', 
-         div(img(src = "CONABIO_LOGO_13.JPG", width = "100"), 
+         div(img(src = "CONABIO_LOGO_13.png", width = "200"), 
              img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
          # Define UI for slider demo application
          
@@ -220,29 +185,15 @@ tabPanel('Sankey',
         # br(),
 
          br(),
-         #column(5, wellPanel(h4("FDFDFDFDF"))),
          br(),
          br(),
          br(),
          shinyUI(fluidPage(
-           #Application title
-           #titlePanel("Gráfica de Sankey"),
-           
            
            sidebarLayout(
              sidebarPanel(
                
-               #Raza Primaria
-            #   selectInput(inputId = "Raza_primarias",
-            #               label = h6("Raza Primaria:"),
-            #               c("All", levels(TableL2$Raza_primaria))),
-            #   #c("All", unique(as.character(TableL$Raza_primaria)))),
-               
-            #   #Por Complejo Racial
-            #   selectInput(inputId = "Complejo_racials",
-            #               label = h6("Grupo Racial:"),
-            #               c("All", levels(TableL2$Complejo_racial))),
-               
+         
                #Por Estado
                selectInput(inputId = "Estados",
                            label = h5("Estado:"),
@@ -250,12 +201,6 @@ tabPanel('Sankey',
                br(),
                h5("Visualización de la presencia de maíces en distintos estados"),
                br()
-               
-              # selectInput(inputId = "Complejo_racials",
-              #             label = h6("Grupo racial:"),
-              #             levels(TableLL$Complejo_racial)),
-               
-               
                
              , width = 2),    
                 column(9,
@@ -269,7 +214,7 @@ tabPanel('Sankey',
 
   
 tabPanel('Datos adicionales sobre el maíz',
-         div(img(src = "CONABIO_LOGO_13.JPG", width = "100"), 
+         div(img(src = "CONABIO_LOGO_13.png", width = "200"), 
              img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
          #div(img(src = "CodiceFlorentino.png", width = "750"), style = "text-align: center;"),
          br(),
@@ -357,7 +302,7 @@ tabPanel('Datos adicionales sobre el maíz',
 
 tabPanel('Bibliografía',
          
-         div(img(src = "CONABIO_LOGO_13.JPG", width = "100"), 
+         div(img(src = "CONABIO_LOGO_13.png", width = "200"), 
              img(src = "CodiceFlorentino.png", width = "300"), style = "text-align: center;"),
          #div(img(src = "CodiceFlorentino.png", width = "750"), style = "text-align: center;"),
          

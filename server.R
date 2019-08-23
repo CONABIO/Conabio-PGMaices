@@ -67,16 +67,9 @@ shinyServer(function(input, output, session) {
  
     TT <- paste(Goldberg$Raza_primaria)
     leaflet() %>%
-      #clearShapes() %>%
       addTiles() %>%
-      #clearMarkers() %>%
-      #clearBounds() %>%  
       addCircleMarkers(Goldberg$longitude, Goldberg$latitude, 
                        weight = 8, radius = 5, stroke = F, fillOpacity = 0.9, color = Goldberg$RatingCol,
-                    #   clusterOptions = markerClusterOptions(showCoverageOnHover = T, 
-                    #                                         spiderfyOnMaxZoom = T,
-                    #                                         zoomToBoundsOnClick = T,
-                    #                                         spiderfyDistanceMultiplier = 2), 
                       popup = paste(sep = " ",
                                      "Complejo Racial:",Goldberg$Complejo_racial,"<br/>",
                                      "Raza Maiz:",Goldberg$Raza_primaria,"<br/>", 
@@ -123,16 +116,6 @@ shinyServer(function(input, output, session) {
   
  
  
- #Momo1 %>%  hideGroup("Parientes")
-   
-  
-  
-  
-  
- # Parientes2 <- Parientes[Parientes$Tipo %in% input$Tipo,] %>%
- 
-  
-
   ############
   #Para ventana 2 Imagenes y Grafico cleveland Plot
   points1 <- reactive({
@@ -175,7 +158,6 @@ shinyServer(function(input, output, session) {
         }else inorg <- inorg
     
     
-    #TableLH <- TableL[TableL1c$Raza_Primaria %in% input$Raza_Primaria,]
     filename <- file.path('./www', paste(inorg, '.jpg', sep = ''))
     #Return a list containing the filename and alt text
     list(src = filename,
@@ -193,35 +175,25 @@ shinyServer(function(input, output, session) {
     
     
     print(Anexo7[1,], max.levels = 0, justify = c("right"), zero.print = ".")
-    #dataset <- datasetInput()
-    #summary(dataset)
+   
   })
   #Para la gráfica
   
   output$plot11 <- renderPlotly({
-    #newData<-TablaVal
     newData <- points1()
     ### para la figura
-    #names(newData)
     LL <- ggplot(newData, aes(x = Val1, y = reorder(Estado, Val1)), size = 0.2) +
       # use a larger dot
       geom_segment(aes(yend = Estado, xend = 0)) +
       # plot the n points and color them
       geom_point(size = 3, color = "red", shape = 15) +
       labs(title = "", x = "No. Registros", y = "Estados")
-      #theme_bw() +
-      #coord_flip()
-    LL <- LL + theme(axis.text.x = element_blank(),axis.ticks = element_blank(),
-                     #panel.grid.minor. = element_blank(),
-                     #panel.grid.major = element_line(colour = "black", linetype = "dotted"),
+      LL <- LL + theme(axis.text.x = element_blank(),axis.ticks = element_blank(),
                      panel.grid.minor.x = element_blank(),
                      panel.grid.major.x = element_blank(),
                      axis.title = element_text(size = 14,face = "bold")) +
       theme(legend.title = element_blank())
     
-    #LL
-    #LL+geom_text(aes(label=newData$Mountain), 
-    #                    color="gray20", size=1)
     gg <- plotly::ggplotly(LL)
     gg
     
@@ -231,14 +203,6 @@ shinyServer(function(input, output, session) {
   
   points2 <- reactive({
  
-       #input$update
-  #  if (input$Raza_primarias != "All") {
-  #    TableL2 <- TableL2[TableL2$Raza_primaria %in% input$Raza_primarias,]
-  #  }else TableL2 <- TableL2
-    
-  # if (input$Complejo_racials != "All") {
-  #    TableL2 <- TableL2[TableL2$Complejo_racial %in% input$Complejo_racials,]
-  #  }else TableL2 <- TableL2
     
     if (input$Estados != "All") {
       TableL2 <- TableL2[TableL2$Estado %in% input$Estados,]
@@ -249,10 +213,6 @@ shinyServer(function(input, output, session) {
   Richard1 <- reactive({
     TableL22 <- points2()
     
-    
-    #attach(TableL22)
-    #TableLJJ <- aggregate(Val1 ~ Complejo_racial + Estado , FUN = sum, na.rm = T)
-    #TableLJJF <- aggregate(Val1 ~ Complejo_racial + Raza_primaria, FUN = sum, na.rm = T)
     
     TableLJJ <- aggregate(TableL22$Val1 ~ TableL22$Raza_primaria + TableL22$Estado , FUN = sum, na.rm = T)
     TableLJJF <- aggregate(TableL22$Val1 ~ TableL22$Raza_primaria + TableL22$Complejo_racial, FUN = sum, na.rm = T)
@@ -289,15 +249,6 @@ shinyServer(function(input, output, session) {
                                       ), chartid = "Sankey"
                       )
     
-    #output$sankeyplot <- renderGvis({ gvisSankey(sankeydata(), from = "source", to = "target",
-    #                                            weight = "value", options = list( width = 1200, height = 600, 
-    #                                        sankey = "{
-    #                                        link: {color: { fill: 'grey100' } }, 
-    #                                        node: { width: 40, color: { fill: '#a61d4c' },
-    #                                        label: { fontName: 'Calibri', fontSize: 12, 
-    #                                        color: '#871b47'} }}" ), chartid = "Sankey" )})
-    
-    #plot(LL34)
     return(LL34)
     
   })

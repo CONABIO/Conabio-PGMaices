@@ -8,16 +8,7 @@ library(vcd)
 library(plyr)
 library(dplyr)
 
-#library(ggplot2movies)
-
-#For Mac
-# setwd("~/Dropbox/GitHub/Conabio-PGMaices")
-
-#TableP<-read.table("~/Dropbox/JANO/2016/Conabio/Github/shiny_maiz/RawData.txt", head=T, sep="\t")
 dir()
-#getwd()
-#dir('./image')
-#TableP <- read.csv("RawData.csv", head = T, sep = ",")
 TableP <- read.csv("PGM_update2017.csv", head = T, sep = ",")
 
 TTabla <- TableP %>%
@@ -205,9 +196,6 @@ dim(Teo1)
 #Cargar los datos de Teocintle
 Tripsacum <- read.delim("Tripsacum.csv", head = T, sep = ",")
 Trip1 <- Tripsacum %>%
-  #mutate(Altitud = as.numeric(Altitud)) %>%
-  #mutate(Longitud = as.numeric(Longitud)) %>%
-  #mutate(Latitud = as.numeric(Latitud)) %>%
   dplyr::filter(!is.na(Latitud)) %>%
   distinct()
 
