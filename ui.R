@@ -92,13 +92,13 @@ dashboardPagePlus(
           br(),
           h2(strong("Introducción"), align = "center"), 
           h4(
-            "El objetivo del Proyecto Global de Maíces, es actualizar la
+            "El objetivo del Proyecto Global de Maíces (PGM), fue actualizar la
               información de maíces y sus parientes silvestres en México para
               la determinación de centros de diversidad genética del maíz."
           ), 
           br(),
           h4(
-            "El proyecto es liderado por ",
+            "El proyecto fue liderado por ",
             tags$a(href = "http://www.conabio.gob.mx/",
                    "CONABIO") ,
             " y coordinado con el Instituto Nacional de Investigaciones Forestales, Agrícolas y Pecuarias (",
@@ -107,10 +107,16 @@ dashboardPagePlus(
             ")"
           ),
           #br(),
-          h4("El proyecto incluye tres líneas de acción:"),
+          h4("El proyecto incluyó tres líneas de acción:"),
           h4("1. Generación de un documento sobre centros de origen y de diversidad genética del maíz"),
           h4("2. Computarización de colecciones científicas de maíz nativo, teocintle y tripsacum "),
           h4("3. Conocimiento de la diversidad y distribución actual del maíz nativo y sus parientes silvestres a través de proyectos de colecta"),
+          br(),
+          h4("Los registros de maíces corresponden a las bases de datos de los proyectos financiados durante el PGM y 
+             bases de datos donadas. Hasta ahora, el total de registros de maíces nativos es de 25,862 registros, 
+             de los cuales 25,095 registros contienen coordenadas geográficas. Los datos puede descargarse", tags$a(href = "https://www.biodiversidad.gob.mx/media/1/genes/files/BaseMaicesNativos.xlsx", "aqui.")),
+          br(),
+          br(),
           h2(strong("Visualización:"), align = "center"),
           h4("Esta visualización esta dividida en las siguientes secciones:"),
           
@@ -343,7 +349,7 @@ dashboardPagePlus(
                  h4(textOutput("summary1")),
                  h5(
                    "Fuente:",
-                   tags$a(href = "https://www.biodiversidad.gob.mx/genes/pdf/proyecto/Anexo6_ReunionesTalleres/Tabla%20razas_marzo%202010.pdf", "Maíces")
+                   tags$a(href = "https://www.biodiversidad.gob.mx/media/1/genes/files/Tabla_razas_marzo_2010.pdf", "Maíces")
                  )
                                         ),
                imageOutput("preImage", height = 500, width = 500

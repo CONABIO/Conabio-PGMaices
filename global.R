@@ -17,7 +17,7 @@ TTabla$Anhio_Colecta <- base::as.factor(TTabla$Anhio_Colecta)
 
 TTabla <- TTabla %>%
   dplyr::mutate(Estado = revalue(Estado,c("AGUASCALIENTES" = "Aguascalientes"))) %>%
-  #dplyr::mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA" = "Baja California"))) %>%
+  dplyr::mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA" = "Baja California"))) %>%
   dplyr::mutate(Estado = revalue(Estado,c("BAJA CALIFORNIA SUR" = "Baja California Sur"))) %>%
   dplyr::mutate(Estado = revalue(Estado,c("CAMPECHE" = "Campeche"))) %>%
   dplyr::mutate(Estado = revalue(Estado,c("CHIAPAS" = "Chiapas"))) %>%
@@ -156,12 +156,10 @@ Teocintle <- Teocintle %>%
   select(Tipo, longitude, latitude, Fuente, Taxa, Estado, Municipio)
 Parientes <- rbind(Tripsacum, Teocintle)
 
-#Parientes$longitude[!is.na(Parientes$longitude)]
 
 Anexo6 <- read.csv("Anexo6_InfoMaices.csv", header = T, sep = ",")
 Anexo6$Raza_Primaria <- as.character(Anexo6$Raza_Primaria)
 
-#rm(Teo1, Teo2, Teocintle, Trip1, Trip2, Tripsacum)
 
 #Para la Altitud
 
@@ -244,16 +242,3 @@ Size8 <- Size6 %>%
 Size9 <- Size6 %>% 
   arrange(minimo) %>% 
   mutate(ordenar1 = minimo)
-
-
-
-#Anexo7 <- Anexo6 %>%
-#  drop_na() %>% 
-#  dplyr::filter(Raza_Primaria == "Cónico") %>%
-#  dplyr::select(Informacion1) 
-#  
-#Anexo7 <- toString(Anexo7$Informacion1)
-#substring(Anexo7,2)
-#  
-#names(Anexo7)
-#substring(print(Anexo7),5, last = 1000000L)
