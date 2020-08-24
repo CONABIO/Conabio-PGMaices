@@ -402,7 +402,7 @@ dashboardPagePlus(
         br(),
         fluidRow(
           tags$style(type = "text/css", "#graph2 {height: calc(100vh - 80px) !important;}"),
-          plotOutput('graph2', height = "180%", width = "100%")
+          plotOutput('graph2', height = "200%", width = "90%")
         ),
         
         absolutePanel(
@@ -435,7 +435,7 @@ dashboardPagePlus(
         br(),
         fluidRow(
           tags$style(type = "text/css", "#graph3 {height: calc(100vh - 80px) !important;}"),
-          plotOutput('graph3', height = "140%", width = "100%")
+          plotOutput('graph3', height = "200%", width = "90%")
         ),
         
         absolutePanel(
@@ -467,8 +467,7 @@ dashboardPagePlus(
         # Define UI for slider demo application
         
         h3("La gráfica de aluvial o de Flujo de las razas de maíces en México"),
-        h4(
-          "Esta gráfica visualizan la distribución de las
+        h4("Esta gráfica visualizan la distribución de las
              razas de maíces. De izquierda a derecha se muestran los distintos ",
           tags$a(href = "https://www.biodiversidad.gob.mx/usos/maices/razas2012.html",
                  "complejos raciales"),
@@ -649,7 +648,7 @@ dashboardPagePlus(
         ),
         h5(
           "Carrera Valtierra, J. A. 2013. Estudio de la diversidad genética y su distribución de los maíces criollos y sus parientes silvestres en Michoacán. Universidad Autónoma de Chapingo. Centro Regional Universitario Centro Oriente. Bases de datos SNIB2013-CONABIO Maíz. Proyecto No. ",
-          tags$a(href = "http://www.biodiversidad.gob.mx/genes/pdf/proyecto/Anexo8_ResultadosProyectos/FZ001/Informe%20Final%20FZ001.pdf", "FZ001."),
+          tags$a(href = "http://www.conabio.gob.mx/institucion/cgi-bin/datos2.cgi?Letras=FZ&Numero=1", "FZ001."),
           " México, D.F."
         ),
         h5(
