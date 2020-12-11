@@ -94,7 +94,8 @@ TableL <- TableL %>%
                                                 "Cubano Amarillo" = "#ef3b2c", "Nal-tel de Altura" = "#fb6a4a",
                                                 "Pepitilla" = "#fc9272", "Tepecintle" = "#fcbba1", "Tuxpeño" = "#fed976",
                                                 "Tuxpeño Norteño" = "#bd0026", "Vandeño" = "#e31a1c", 
-                                                "Zapalote Grande" = "#fc4e2a")))
+                                                "Zapalote Grande" = "#fc4e2a"))) %>% 
+  dplyr::filter(AltitudProfundidad < 5000)
 
 
 #Ventana 2 Foto y Cleveland Plot
@@ -159,6 +160,16 @@ Parientes <- rbind(Tripsacum, Teocintle)
 
 Anexo6 <- read.csv("Anexo6_InfoMaices.csv", header = T, sep = ",")
 Anexo6$Raza_Primaria <- as.character(Anexo6$Raza_Primaria)
+
+#Anexo777 <- Anexo6 %>%
+#  #drop_na() %>% 
+#  dplyr::filter(Raza_Primaria == "Ancho") %>%
+#  #mutate(NADA = NA) %>% 
+#  #column_to_rownames(., var = "NADA") %>% 
+#  dplyr::select(Informacion1) %>% 
+#  remove_rownames()
+#
+#rownames(Anexo777) <- NULL
 
 
 #Para la Altitud

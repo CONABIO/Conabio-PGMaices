@@ -3,6 +3,7 @@ library(leaflet)
 library(RColorBrewer)
 #library(dplyr)
 library(knitr)
+library(ggthemes)
 library(vcd)
 library(grid)
 library(plotly)
@@ -53,64 +54,453 @@ shinyServer(function(input, output, session) {
                                            selected = "conabio"))
   
   
-  
   observeEvent(
-    input$Complejo_racial,
-    if (input$Complejo_racial != "All") {
+    eventExpr = c(input$Raza_primaria, input$Complejo_racial, input$Estado, input$Proyecto),
+    if (input$Raza_primaria != "All" & input$Complejo_racial != "All" & input$Estado != "All" & input$Proyecto != "All") {
+      selectInput(session,
+                        inputId = "Complejo_racial ",
+                        choices = c("All" , levels(TableL$Complejo_racial)))
+      selectInput(session,
+                        inputId = "Raza_primaria",
+                        choices = c("All" , levels(TableL$Raza_primaria)))
+      selectInput(session,
+                        inputId = "Estado",
+                        choices = c("All" , levels(TableL$Estado)))
+      selectInput(session,
+                        inputId = "Proyecto",
+                        choices = c("All" , levels(TableL$Proyecto)))
+      
+      numericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                  TableL$Raza_primaria %in% input$Raza_primaria &
+                                                  TableL$Estado %in% input$Estado & 
+                                                  TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Estado %in% input$Estado & 
+                                              TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Estado %in% input$Estado & 
+                                              TableL$Proyecto %in% input$Proyecto])
+      )
+      
+    #  updateSliderInput(
+    #    session,
+    #    inputId = "AltitudProfundidad",
+    #    value = range(TableL$AltitudProfundidad),
+    #    min = min(TableL$AltitudProfundidad),
+    #    max = max(TableL$AltitudProfundidad)
+    #  )
+      
+    } 
+    else if (input$Raza_primaria != "All" &
+             input$Complejo_racial != "All" &
+             input$Estado != "All" & 
+             input$Proyecto == "All") {
+      
       updateSelectInput(
         session,
-        inputId = "Raza_primaria",
-        label = "Raza Primaria:",
+        inputId = "Proyecto",
+        #label = "Especie:",
         choices = c("All" , levels(droplevels(
-          as.factor(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial])
-        )))
-      )
-      updateSelectInput(
+          as.factor(TableL$Proyecto[TableL$Complejo_racial %in% input$Complejo_racial &
+                                      TableL$Raza_primaria %in% input$Raza_primaria &
+                                      TableL$Estado %in% input$Estado])))))
+        
+        updateNumericInput(
+          session,
+          inputId = "AltitudProfundidad",
+          value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                    TableL$Raza_primaria %in% input$Raza_primaria &
+                                                    TableL$Estado %in% input$Estado]),
+          min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                TableL$Raza_primaria %in% input$Raza_primaria &
+                                                TableL$Estado %in% input$Estado]),
+          max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                TableL$Raza_primaria %in% input$Raza_primaria &
+                                                TableL$Estado %in% input$Estado])
+        )
+      
+      
+    }
+    else if (input$Complejo_racial != "All" &
+             input$Raza_primaria != "All" &
+             input$Estado == "All" & 
+             input$Proyecto == "All") {
+      # updateSelectInput(session,
+     #                   inputId = "Complejo_racial ",
+     #                   choices = c("All" , levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Raza_primaria %in% input$Raza_primaria])))))
+     # updateSelectInput(session,
+     #                   inputId = "Raza_primaria",
+     #                   choices = c("All" , levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial])))))
+      updateSelectInput(session, inputId = "Proyecto", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Proyecto[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                         TableL$Raza_primaria %in% input$Raza_primaria])))))
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                       TableL$Raza_primaria %in% input$Raza_primaria])))))
+      updateNumericInput(
         session,
-        inputId = "Estado",
-        label = "Estado:",
-        choices = c("All" , levels(droplevels(
-          as.factor(TableL$Estado[TableL$Complejo_racial %in% input$Complejo_racial])
-        )))
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                  TableL$Raza_primaria %in% input$Raza_primaria]),
+        min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Raza_primaria %in% input$Raza_primaria]),
+        max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Raza_primaria %in% input$Raza_primaria])
       )
-      # toggle("hideme")
-    } else
-      updateSelectInput(
+      
+    }
+    else if (input$Raza_primaria == "All" &
+             input$Complejo_racial != "All" &
+             input$Estado == "All" & 
+             input$Proyecto == "All") {
+      updateSelectInput(session, inputId = "Proyecto", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Proyecto[TableL$Complejo_racial %in% input$Complejo_racial])))))
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado[TableL$Complejo_racial %in% input$Complejo_racial])))))
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial])))))
+      
+      updateNumericInput(
         session,
-        inputId = "Raza_primaria",
-        label = "Raza Primaria:",
-        choices = c("All", levels(as.factor(TableL$Raza_primaria)))
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial]),
+        min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial]),
+        max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial])
       )
-#    updateSelectInput(
-#      session,
-#      inputId = "Estado",
-#      label = "Estado:",
-#      choices = c("All" , levels(as.factor(TableL$Estado)))
-#    )
-  )
-  
- ########
-  observeEvent(
-    input$Raza_primaria,
-    if (input$Raza_primaria != "All") {
-      updateSelectInput(
+      
+    }
+    else if (input$Raza_primaria != "All" &
+             input$Complejo_racial != "All" &
+             input$Estado == "All" & 
+             input$Proyecto != "All") {
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                       TableL$Raza_primaria %in% input$Raza_primaria &
+                                                                                       TableL$Proyecto %in% input$Proyecto])))))
+      
+      
+      updateNumericInput(
         session,
-        inputId = "Estado",
-        label = "Estado:",
-        choices = c("All" , levels(droplevels(
-          as.factor(TableL$Estado[TableL$Raza_primaria %in% input$Raza_primaria])
-        )))
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                  TableL$Raza_primaria %in% input$Raza_primaria &
+                                                  TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Proyecto %in% input$Proyecto])
       )
-      # toggle("hideme")
-    } else
-      updateSelectInput(
+      
+    }
+    else  if (input$Raza_primaria == "All" &
+              input$Complejo_racial != "All" &
+              input$Estado == "All" & 
+              input$Proyecto != "All") {
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                              TableL$Proyecto %in% input$Proyecto])))))
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                       TableL$Proyecto %in% input$Proyecto])))))
+      updateNumericInput(
         session,
-        inputId = "Estado",
-        label = "Estado:",
-        choices = c("All" , levels(as.factor(TableL$Estado)))
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                  TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Proyecto %in% input$Proyecto])
       )
-  )
-  
+      
+    }
+    else if (input$Raza_primaria == "All" &
+             input$Complejo_racial == "All" &
+             input$Estado == "All" & input$Proyecto != "All") {
+      updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Proyecto %in% input$Proyecto])))))
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Proyecto %in% input$Proyecto])))))
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado[TableL$Proyecto %in% input$Proyecto])))))
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Proyecto %in% input$Proyecto])
+      )
+      
+    }
+    else  if (input$Raza_primaria == "All" &
+              input$Complejo_racial != "All" &
+              input$Estado != "All" & 
+              input$Proyecto != "All") {
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                              TableL$Estado %in% input$Estado &
+                                                                                              TableL$Proyecto %in% input$Proyecto])))))
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                  TableL$Estado %in% input$Estado &
+                                                  TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Estado %in% input$Estado &
+                                              TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Estado %in% input$Estado &
+                                              TableL$Proyecto %in% input$Proyecto])
+      )
+      
+    }
+    else if (input$Raza_primaria == "All" &
+             input$Complejo_racial != "All" &
+             input$Estado != "All" 
+             & input$Proyecto == "All") {
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                              TableL$Estado %in% input$Estado])))))
+      updateSelectInput(session, inputId = "Proyecto", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Proyecto[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                                                         TableL$Estado %in% input$Estado])))))
+      
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                                  TableL$Estado %in% input$Estado]),
+        min = min(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Estado %in% input$Estado]),
+        max = max(TableL$AltitudProfundidad[TableL$Complejo_racial %in% input$Complejo_racial &
+                                              TableL$Estado %in% input$Estado])
+      )
+      
+      
+    }
+    else if (input$Raza_primaria != "All" &
+             input$Complejo_racial == "All" &
+             input$Estado != "All" & 
+             input$Proyecto == "All") {
+      updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                                                                TableL$Estado %in% input$Estado])))))
+      
+      updateSelectInput(session, inputId = "Proyecto", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Proyecto[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                                                         TableL$Estado %in% input$Estado])))))
+      
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                  TableL$Estado %in% input$Estado]),
+        min = min(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Estado %in% input$Estado]),
+        max = max(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Estado %in% input$Estado])
+      )
+    
+    }
+    else if (input$Raza_primaria != "All" &
+             input$Complejo_racial == "All" &
+             input$Estado == "All" & 
+             input$Proyecto == "All") {
+      updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Raza_primaria %in% input$Raza_primaria])))))
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado[TableL$Raza_primaria %in% input$Raza_primaria])))))
+      updateSelectInput(session, inputId = "Proyecto", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Proyecto[TableL$Raza_primaria %in% input$Raza_primaria])))))
+      
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria]),
+        min = min(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria]),
+        max = max(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria])
+      )
+ #     updateNumericInput(session,
+ #                     inputId = "AltitudProfundidad",
+ #                     min = min(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria]),
+ #                     max = max(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria]))
+ #     
+           
+    }
+ else if (input$Raza_primaria != "All" &
+          input$Complejo_racial == "All" &
+          input$Estado == "All" & 
+          input$Proyecto != "All") {
+   updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                                                                TableL$Proyecto %in% input$Proyecto])))))
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                                                       TableL$Proyecto %in% input$Proyecto])))))
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                  TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Proyecto %in% input$Proyecto])
+      )
+      
+    }
+ else if (input$Raza_primaria == "All" &
+          input$Complejo_racial == "All" &
+          input$Estado != "All" & 
+          input$Proyecto != "All") {
+   updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Estado %in% input$Estado &
+                                                                                                TableL$Proyecto %in% input$Proyecto])))))
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Estado %in% input$Estado &
+                                                                                              TableL$Proyecto %in% input$Proyecto])))))
+      
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Estado %in% input$Estado &
+                                                  TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Estado %in% input$Estado &
+                                              TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Estado %in% input$Estado &
+                                              TableL$Proyecto %in% input$Proyecto])
+      )
+      
+    }
+ else if (input$Raza_primaria != "All" &
+          input$Complejo_racial == "All" &
+          input$Estado != "All" & 
+          input$Proyecto != "All") {
+   updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                                                                TableL$Estado %in% input$Estado &
+                                                                                                TableL$Proyecto %in% input$Proyecto])))))
+      
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                                  TableL$Estado %in% input$Estado &
+                                                  TableL$Proyecto %in% input$Proyecto]),
+        min = min(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Estado %in% input$Estado &
+                                              TableL$Proyecto %in% input$Proyecto]),
+        max = max(TableL$AltitudProfundidad[TableL$Raza_primaria %in% input$Raza_primaria &
+                                              TableL$Estado %in% input$Estado &
+                                              TableL$Proyecto %in% input$Proyecto])
+      )
+      
+    }
+ else if (input$Complejo_racial == "All" &
+          input$Raza_primaria == "All" &
+          input$Estado != "All" & 
+          input$Proyecto == "All") {
+   
+      updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial[TableL$Estado %in% input$Estado])))))
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria[TableL$Estado %in% input$Estado])))))
+      updateSelectInput(session, inputId = "Proyecto", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Proyecto[TableL$Estado %in% input$Estado])))))
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad[TableL$Estado %in% input$Estado]),
+        min = min(TableL$AltitudProfundidad[TableL$Estado %in% input$Estado]),
+        max = max(TableL$AltitudProfundidad[TableL$Estado %in% input$Estado])
+      )
+      
+    }
+ else if(input$Complejo_racial == "All" &
+          input$Raza_primaria == "All" &
+          input$Estado == "All" &
+          input$Proyecto == "All") {
+   
+      updateSelectInput(session, inputId = "Complejo_racial", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Complejo_racial)))))
+      updateSelectInput(session, inputId = "Raza_primaria", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Raza_primaria)))))
+      updateSelectInput(session, inputId = "Estado", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Estado)))))
+      updateSelectInput(session, inputId = "Proyecto", 
+                        #label = "Especie:", 
+                        choices = c("All" ,levels(droplevels(as.factor(TableL$Proyecto)))))
+      updateNumericInput(
+        session,
+        inputId = "AltitudProfundidad",
+        value = range(TableL$AltitudProfundidad),
+        min = min(TableL$AltitudProfundidad),
+        max = max(TableL$AltitudProfundidad)
+      )
+      }
+ 
+   # else 
+   # {
+   #   selectInput(session, inputId = "Complejo_racial", 
+   #               #label = "Estado:", 
+   #               choices = c("All", levels(TableL$Complejo_racial)))
+   #   selectInput(session, inputId = "Raza_primaria", 
+   #               #label = "Estado:", 
+   #               choices = c("All", levels(TableL$Raza_primaria)))
+   #   selectInput(session, inputId = "Estado", 
+   #               #label = "Estado:", 
+   #               choices = c("All", levels(TableL$Estado)))
+   #   selectInput(session, inputId = "Proyecto", 
+   #               #label = "Estado:", 
+   #               choices = c("All", levels(TableL$Proyecto)))
+   #   
+   #   numericInput(
+   #     session,
+   #     inputId = "AltitudProfundidad",
+   #     value = range(TableL$AltitudProfundidad),
+   #     min = min(TableL$AltitudProfundidad),
+   #     max = max(TableL$AltitudProfundidad)
+   #   )
+   # }
+ )
   
   #######
   
@@ -120,6 +510,7 @@ shinyServer(function(input, output, session) {
   points <- reactive({
     #input$update
     #TableL <- TableL()
+    TableL <- TableL[TableL$AltitudProfundidad >= input$AltitudProfundidad[1] & TableL$AltitudProfundidad <= input$AltitudProfundidad[2],] 
     
     if (input$Complejo_racial != "All") {
       TableL <- TableL[TableL$Complejo_racial %in% input$Complejo_racial,]
@@ -138,11 +529,14 @@ shinyServer(function(input, output, session) {
       TableL <- TableL[TableL$Estado %in% input$Estado,]
     } else TableL <- TableL
     
+ #   if (input$AltitudProfundidad != range(TableL$AltitudProfundidad)) {
+ #     TableL <- TableL[TableL$AltitudProfundidad %in% input$AltitudProfundidad,]
+ #   } else TableL <- TableL
+    
     
   })
   
-  
-  
+ 
   #head(Parientes)
   #validateCoords(Parientes$longitude, Parientes$latitude, mode = c("point"))
   
@@ -165,6 +559,7 @@ shinyServer(function(input, output, session) {
                                        "Raza Maiz:",Goldberg$Raza_primaria,"<br/>", 
                                        "Municipio:",Goldberg$Municipio, "<br/>",
                                        "Localidad:",Goldberg$Localidad, "<br/>",
+                                       "Altitud:",Goldberg$AltitudProfundidad, "<br/>",
                                        "Periodo:",Goldberg$Periodo, "<br/>",
                                        "Proyecto:",Goldberg$Proyecto, "<br/>")) %>%
         
@@ -265,8 +660,9 @@ shinyServer(function(input, output, session) {
       dplyr::select(Informacion1)
     
     Anexo7 <- toString(Anexo7$Informacion1)
+    #Anexo7 <- sub('^.', Anexo7)
     Anexo7 <- substring(Anexo7,1)
-    print(Anexo7, max.levels = 0, justify = c("right"), zero.print = ".")
+    print(Anexo7, max.levels = 0, justify = c("right"), zero.print = "0")
     
   })
   #Para la gráfica
@@ -283,23 +679,23 @@ shinyServer(function(input, output, session) {
         ),
         colour = "#dddddd",
         size = 3,
-        colour_x = "#FAAB18",
-        colour_xend = "#1380A1",
+        colour_x = "#dddddd",
+        colour_xend = "#FF8C00",
         dot_guide = TRUE,
         dot_guide_size = 0.05
       ) +
-      theme_minimal() +
+      theme_light() +
       labs(
         title = "",
         x = "Registros",
-        y = "Estados",
+        y = "",
         family = "Helvetica",
         size = 14
       ) +
       theme(
         legend.position = "",
         axis.text.x = element_text(angle = 0, size = 14),
-        axis.text.y = element_text(size = 14)
+        axis.text.y = element_text(size = 14, vjust = 1)
       )
     
     LL
@@ -321,26 +717,36 @@ shinyServer(function(input, output, session) {
     uno <- ggplot(LL) + 
       geom_dumbbell(aes(x = minimo, xend = maximo, y = reorder(Raza, ordenar1) ),
                     colour = "#dddddd",
-                    size = 3,
-                    colour_x = "#FAAB18",
-                    colour_xend = "#1380A1",
-                    dot_guide = TRUE,
-                    dot_guide_size = 0.05) +
-      theme_minimal() +
+                    size = 4,
+                    colour_x = "#FFA07A",
+                    colour_xend = "#FF4500",
+                    dot_guide = F,
+                    dot_guide_size = 0.01) +
+                    #width = 4,
+                    #position = position_dodge(3)) +
+      geom_point(aes(x = prom, y = reorder(Raza, ordenar1)),
+                 size = 5, 
+                 colour = "#BDB76B") +
+      theme_light() +
       theme(legend.position = "", 
-            axis.text.x = element_text(angle = 0, size = 12, hjust = 0, vjust = 0),
-            axis.text.y = element_text(size = 12), 
-            axis.title = element_text(size = 12), 
-            legend.text = element_text(size = 12)) +
+            axis.text.x = element_text(angle = 0, size = 18, hjust = 0, vjust = 0),
+            axis.text.y = element_text(size = 18), 
+            #axis.title = element_text(size = 18), 
+           # legend.text = element_text(size = 12),
+         #  plot.margin = unit(c(.8,1,.8,1), "cm"),
+            plot.title = element_text(size = 20, vjust = 6), 
+            axis.title.x.bottom = element_text(size = 16),
+           panel.spacing.y = unit(1, "lines")) +
       labs(title = "", x = "metros", 
-           y = "Razas de maícees", fill = "",
-           family = "Helvetica") +
-      xlim(0, 4000) 
+           y = "", fill = "",
+           family = "Helvetica") 
+      #xlim(0, 4000) +
+      #scale_y_discrete(guide = guide_axis(n.dodge = 1), expand = c(0, 6))
     # last_plot +
     #    transition_reveal(ordenar1)
     
     uno
-  }
+  }, height = 1400, width = "auto"
   )
   
   
@@ -358,26 +764,31 @@ shinyServer(function(input, output, session) {
     uno <- ggplot(LL) + 
       geom_dumbbell(aes(x = minimo, xend = maximo, y = reorder(Raza, ordenar1) ),
                     colour = "#dddddd",
-                    size = 3,
-                    colour_x = "#FAAB18",
-                    colour_xend = "#1380A1",
+                    size = 4,
+                    colour_x = "#808000",
+                    colour_xend = "#FF6347",
                     dot_guide = TRUE,
                     dot_guide_size = 0.05) +
-      theme_minimal() +
+      geom_point(aes(x = prom, y = reorder(Raza, ordenar1)),
+                 size = 5, 
+                 colour = "#4682B4") +
+      theme_light() +
       theme(legend.position = "", 
-            axis.text.x = element_text(angle = 0, size = 12, hjust = 1, vjust = 0),
-            axis.text.y = element_text(size = 12), 
-            axis.title = element_text(size = 12), 
-            legend.text = element_text(size = 12)) +
+            axis.text.x = element_text(angle = 0, size = 18, hjust = 1, vjust = 0),
+            axis.text.y = element_text(size = 18), 
+            #axis.title = element_text(size = 18), 
+           # legend.text = element_text(size = 12),
+            #plot.title = element_text(size = 20),
+            axis.title.x.bottom = element_text(size = 16)) +
       labs(title = "", x = "cm", 
-           y = "Razas de maícees", fill = "",
+           y = "", fill = "",
            family = "Helvetica") +
       xlim(0, 40) 
     # last_plot +
     #    transition_reveal(ordenar1)
     
     uno
-  }
+  }, height = 1400, width = "auto"
   )
   
   
