@@ -11,8 +11,10 @@ library(tidyverse)
 library(markdown)
 library(plotly)
 library(httr)
-library(rgdal)
 library(tableHTML)
+library(ggiraph)       # girafeOutput del perfil altitudinal
+library(shinyWidgets)  # pickerInput de los selectores de altitud
+library(datamods)      # filtros cruzados del mapa (select_group_*)
 
 
 #shinyUI(navbarPage(
@@ -20,10 +22,9 @@ library(tableHTML)
 #  title = "Proyecto Global de  Maíces", id = "nav",
 
 
-dashboardPagePlus(
+dashboardPage(
   skin = "yellow",
-  sidebar_background = NULL,
-  
+
   ## Dashboard Header
 #  dashboardHeaderPlus(
 #    title = span(img(src = "CONABIO_LOGO_14.png", width = 100, align = "left")),
@@ -32,7 +33,7 @@ dashboardPagePlus(
 #    fixed = TRUE
 #  ), # close dashboard header
 #  
-  dashboardHeaderPlus(
+  dashboardHeader(
     title = tagList(
       span(class = "logo-lg", img(src = "CONABIO_LOGO_14.png", width = 150)), 
       img(src = "CONABIO_LOGO_15.png", height = 35, align = "center")),
@@ -63,9 +64,14 @@ dashboardPagePlus(
       menuItem("Diversidad de maíces",
                tabName = "widgets1",
                icon = icon("seedling")),
+      # El menuItem padre NO lleva tabName a proposito: si lo llevara, competiria
+      # con sus hijos por la seleccion. startExpanded deja las dos vistas a la
+      # vista desde el arranque, en vez de esconderlas tras un desplegable.
       menuItem("Altitud",
-               tabName = "widgets2",
-               icon = icon("layer-group")),
+               icon = icon("layer-group"),
+               startExpanded = TRUE,
+               menuSubItem("Altitud global",   tabName = "widgets2"),
+               menuSubItem("Altitud por raza", tabName = "altitud_raza")),
       menuItem("Tamaño mazorca",
                tabName = "widgets4",
                icon = icon("cloudversify")),
@@ -85,6 +91,7 @@ dashboardPagePlus(
   ##Dashboard body
   
   dashboardBody(
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")),
     tabItems(
       tabItem(
         tabName = "home",
@@ -125,94 +132,95 @@ dashboardPagePlus(
           h2(strong("Visualización:"), align = "center"),
           h4("Esta visualización esta dividida en las siguientes secciones:"),
           
-                   fluidRow(
-                     boxPlus(
+                   # El div envuelve el renglón para que el CSS de
+                   # www/styles.css iguale la altura de las cajas (ver ahí el
+                   # porqué). Las cajas ya NO llevan height fijo: lo decide el
+                   # flexbox a partir de la más alta del renglón.
+                   div(
+                     class = "visualizacion-cajas",
+                     fluidRow(
+                     box(
                        title = strong("Distribución de maíces"),
                        closable = FALSE,
                        width = 6,
-                       height = 400,
                        status = "warning",
                        solidHeader = TRUE,
                        collapsible = FALSE,
                        h4("Visualiza los registros de las razas de maíces, así como
                        de sus parientes silvestres: teocintles y ", em("tripsacum")),
-                       userPostMedia(src = "mapDistribution.png", height = 400, width = 400),
+                       userPostMedia(image = "mapDistribution.png", height = 400, width = 400),
                        id = "mapa",
                        style = "cursor:pointer;"
                      ),
           
-                     boxPlus(
+                     box(
                        title = strong("Diversidad de maíces"),
                        closable = FALSE,
                        width = 6,
-                       height = 400,
                        status = "warning",
                        solidHeader = TRUE,
                        collapsible = FALSE,
                        h4("Información general sobre cada raza de maíz, así como su distribución en los diferentes
                           estados de la república"),
-                       userPostMedia(src = "DatosMaices2.png", height = 400, width = 400),
+                       userPostMedia(image = "DatosMaices2.png", height = 400, width = 400),
                        id = "datosMaices",
                        style = "cursor:pointer;"
                      ),
           
-                     boxPlus(
+                     box(
                        title = strong("Altitud"),
                        closable = FALSE,
                        width = 6,
-                       height = 400,
                        status = "warning",
                        solidHeader = TRUE,
                        collapsible = FALSE,
                        h4("La altitud mínima y máxima donde se tienen datos de las razas de maíces"),
-                       userPostMedia(src = "altitud1.png", height = 400, width = 400),
+                       userPostMedia(image = "altitud1.png", height = 400, width = 400),
                        id = "Altitud1",
                        style = "cursor:pointer;"
                      ),
           
-                     boxPlus(
+                     box(
                        title = strong("Tamaño de mazorca"),
                        closable = FALSE,
                        width = 6,
-                       height = 400,
                        status = "warning",
                        solidHeader = TRUE,
                        collapsible = FALSE,
                        h4("Existe una gran variabilidad del tamaño de la mazorca entre las 
                           razas de maíz y dentro de las misma raza de maíz"),
-                       userPostMedia(src = "tamanoMazorca.png", height = 400, width = 400),
+                       userPostMedia(image = "tamanoMazorca.png", height = 400, width = 400),
                        id = "Mazorca",
                        style = "cursor:pointer;"
                      ),
                      
-                     boxPlus(
+                     box(
                        title = strong("Gráfica de Aluvial"),
                        closable = FALSE,
                        width = 6,
-                       height = 400,
                        status = "warning",
                        solidHeader = TRUE,
                        collapsible = FALSE,
                        h4("Otra forma de visualizar las razas de maíces de México"),
-                       userPostMedia(src = "aluvial.png", height = 300, width = 300),
+                       userPostMedia(image = "aluvial.png", height = 300, width = 300),
                        id = "Aluvial",
                        style = "cursor:pointer;"
                      ),
                      
-                     boxPlus(
+                     box(
                        title = strong("Bibliografía"),
                        closable = FALSE,
                        width = 6,
-                       height = 400,
                        status = "warning",
                        solidHeader = TRUE,
                        collapsible = FALSE,
                        h4("La lista de documentos generados por el Proyecto Global de Maíces"),
-                       userPostMedia(src = "bibliografia.png", height = 400, width = 400),
+                       userPostMedia(image = "bibliografia.png", height = 400, width = 400),
                        id = "Bibliografia",
                        style = "cursor:pointer;"
                      )
         ) #close FluidRow
+        ), # close div.visualizacion-cajas
       ),
       
       #Ventana del Mapa
@@ -235,42 +243,57 @@ dashboardPagePlus(
           right = 40,
           draggable = T,
           width = "13%",
-          #Raza Primaria
-          selectInput(
-            inputId = "Raza_primaria",
-            label = "Raza Primaria:",
-            c("All", levels(TableL$Raza_primaria))
-            #choices = "",
-            #selected = ""
+          # Los cuatro filtros categóricos se cruzan solos: al elegir un complejo,
+          # las razas que ofrece el siguiente desplegable son ya nada más las de
+          # ese complejo, y así con todos. Antes esto eran cuatro selectInput
+          # sueltos más 450 líneas de observeEvent en el server.
+          #
+          # Dejar un filtro VACÍO significa "no filtrar por esta columna"; ya no
+          # existe la opción literal "All". Y se pueden elegir varios valores a la
+          # vez dentro del mismo filtro.
+          select_group_ui(
+            id = "filtros_mapa",
+            params = list(
+              Complejo_racial = list(inputId = "Complejo_racial",
+                                     label = "Grupo Racial:",
+                                     placeholder = "Todos"),
+              Raza_primaria   = list(inputId = "Raza_primaria",
+                                     label = "Raza Primaria:",
+                                     placeholder = "Todas"),
+              Estado          = list(inputId = "Estado",
+                                     label = "Estado:",
+                                     placeholder = "Todos"),
+              Proyecto        = list(inputId = "Proyecto",
+                                     label = "Proyecto apoyado (ver bibliografía):",
+                                     placeholder = "Todos")
+            ),
+            btn_reset_label = "Limpiar filtros",
+            inline = FALSE,
+            # dropboxWidth ensancha SÓLO el desplegable. Sin él, en un panel del 13%
+            # los nombres largos salen truncados ("Dentados tropi…").
+            vs_args = list(search = TRUE, dropboxWidth = "320px",
+                           searchPlaceholderText = "Buscar...")
           ),
           
-          #Por Complejo Racial
-          selectInput(inputId = "Complejo_racial",
-                      label = "Grupo Racial:",
-                      c("All", levels(as.factor(TableL$Complejo_racial)))),
-          
-          #Por Estado
-          selectInput(inputId = "Estado",
-                      label = "Estado:",
-                      c("All", levels(as.factor(TableL$Estado)))),
-          
-          #Por Altitud
+          # El deslizador de altitud va aparte: datamods sólo maneja columnas
+          # categóricas. Se aplica encima de sus filtros (ver points() en server.R).
           sliderInput(inputId = "AltitudProfundidad",
                       label = "Altitud:",
                       value = range(TableL$AltitudProfundidad),
                       min = min(TableL$AltitudProfundidad),
                       max = max(TableL$AltitudProfundidad),
-                      step = 10),
+                      step = 10, post = " m", ticks = FALSE),
           
-          #Por Proyecto
-          selectInput(inputId = "Proyecto",
-                      label = "Proyecto apoyado (ver bibliografía):",
-                      c("All", levels(as.factor(TableL$Proyecto)))),
-          
+          # OJO: aquí decía choices = levels(Parientes$Tipo), pero esa columna es
+          # character y levels() sobre un character devuelve NULL — así que no se
+          # dibujaba NINGUNA casilla y los 1,013 parientes silvestres (599
+          # teocintles y 414 tripsacum, todos con coordenadas) eran inalcanzables
+          # desde la interfaz. Van apagados por defecto: se añaden al mapa sólo
+          # cuando alguien los pide.
           checkboxGroupInput(
             inputId = "Tipo",
             label = h6("Parientes Silvestres:"),
-            choices = levels(Parientes$Tipo),
+            choices = sort(unique(Parientes$Tipo)),
             selected = NULL
           )
           
@@ -290,49 +313,55 @@ dashboardPagePlus(
         ),
         br(),
         br(),
+        # El selector de raza y su ficha van en una COLUMNA PROPIA, no en un
+        # boxSidebar. En shinydashboardPlus 2.0 el boxSidebar se superpone al
+        # cuerpo de la caja en vez de empujarlo, así que abierto tapaba el tercio
+        # derecho de la gráfica: la barra más larga y su etiqueta quedaban
+        # ocultas debajo del panel, no cortadas. Mismo criterio que en Altitud y
+        # Tamaño de mazorca.
+        #
+        # Aquí había además un fluidPage() anidado dentro de este fluidRow. Un
+        # container-fluid dentro de un row genera márgenes negativos que
+        # desbordan el ancho del padre.
         fluidRow(
-         # h4("Razas de maíces"),
-          
-           fluidPage(
-             boxPlus(
-               width = 12,
-               title = "Razas de maíces", 
-               closable = FALSE, 
-               status = "warning",
-               solidHeader = TRUE, 
-               collapsible = FALSE,
-               enable_sidebar = TRUE,
-               sidebar_width = 30,
-               sidebar_start_open = TRUE,
-               sidebar_content = tagList(
-                 selectInput(
-                 inputId = "Raza_Primaria",
-                 label = h4(strong("Raza de maíz:")),
-                 levels(as.factor(TableL1c$Raza_Primaria))
-                            ),
-                 h4("Características generales:"),
-                 h5(textOutput("summary1")),
-                 h5(
-                   "Fuente:",
-                   tags$a(href = "https://www.biodiversidad.gob.mx/diversidad/alimentos/maices/razas-de-maiz", "Maíces")
-                 )
-                                        ),
-               br(),
-               imageOutput("preImage", height = 500, width = 500
-                           ), 
-              br(),
-              br(),
+          column(
+            width = 3,
+            selectInput(
+              inputId = "Raza_Primaria",
+              label = h4(strong("Raza de maíz:")),
+              choices = sort(unique(as.character(TableL1c$Raza_Primaria))),
+              width = "100%"
+            ),
+            h4("Características generales:"),
+            h5(textOutput("summary1")),
+            h5(
+              "Fuente:",
+              tags$a(href = "https://www.biodiversidad.gob.mx/diversidad/alimentos/maices/razas-de-maiz",
+                     "Maíces")
+            )
+          ),
+          column(
+            width = 9,
+            box(
+              width = 12,
+              title = "Razas de maíces",
+              closable = FALSE,
+              status = "warning",
+              solidHeader = TRUE,
+              collapsible = FALSE,
+              # Sin alto ni ancho fijos: los define www/styles.css. Las fotos
+              # grandes se reducen para caber y las pequeñas quedan centradas a
+              # su tamaño real, sin ampliarse.
+              imageOutput("preImage", height = "auto", width = "100%"),
               br(),
               br(),
               h3(strong("Número de registros por estado")),
-               plotOutput(
-                 "plot11", height = 500, width = 700)
-               )
+              girafeOutput("plot11", height = "auto", width = "100%")
             )
-        #  ) #close sidebarLayout
+          )
         )
       ),
-      
+
       ## Para la gráfica de la Altitud
       tabItem(
         br(),
@@ -351,27 +380,132 @@ dashboardPagePlus(
         br(),
         h4(strong("Presencia de razas de maíces a diferentes alturas")),
         br(),
+        # Los selectores van en su propia columna, NO en un absolutePanel encima de
+        # la figura: el perfil altitudinal es alto y con scroll, así que un panel
+        # flotante termina tapando razas.
         fluidRow(
-          tags$style(type = "text/css", "#graph2 {height: calc(100vh - 80px) !important;}"),
-          plotOutput('graph2', height = "100%", width = "100%")
-          #renderPlot('graph2', height = "auto")
-        ),
-        
-        absolutePanel(
-          top = 275,
-          right = 40,
-          draggable = T,
-          #Seleccionar la variable para
-          selectInput(
-            inputId = 'var11',
-            label = h4(strong('Ordenar por:')),
-            choices = c("promedio", "máximo", "mínimo"),
-            width = 200,
-            #size = 14,
-            selectize = T
+          column(
+            width = 3,
+            # Filtro de estados — permite elegir uno o varios
+            pickerInput(
+              inputId = 'Estado_alt',
+              label = h6(strong('Estado:')),
+              choices = levels(Mex3$Estado),
+              selected = levels(Mex3$Estado),
+              multiple = TRUE,
+              options = pickerOptions(
+                actionsBox = TRUE,
+                liveSearch = TRUE,
+                selectedTextFormat = "count > 2",
+                countSelectedText = "{0} estados seleccionados",
+                noneSelectedText = "Ningún estado seleccionado",
+                selectAllText = "Todos",
+                deselectAllText = "Ninguno",
+                liveSearchPlaceholder = "Buscar estado..."
+              ),
+              width = 200
+            ),
+            # Define cuál de los tres valores marca el punto de cada raza, y con eso
+            # el orden de izquierda a derecha y cuál ladera de la montaña va exacta
+            selectInput(
+              inputId = 'var11',
+              label = h6(strong('Ordenar por:')),
+              choices = c("promedio", "máximo", "mínimo"),
+              width = 200
+            ),
+            # Líneas de referencia: altitud de las capitales estatales, para que
+            # la gente ubique su ciudad y vea qué razas crecen a esa altura
+            pickerInput(
+              inputId = 'capitales',
+              label = h6(strong('Comparar con la altitud de:')),
+              choices = capitales_opciones,
+              selected = character(0),
+              multiple = TRUE,
+              options = pickerOptions(
+                liveSearch = TRUE,
+                selectedTextFormat = "count > 1",
+                countSelectedText = "{0} ciudades",
+                noneSelectedText = "Ninguna ciudad",
+                liveSearchPlaceholder = "Buscar ciudad..."
+              ),
+              width = 200
+            ),
+            # Resalta en rojo y negritas las razas del complejo elegido. No filtra:
+            # las demás siguen visibles, sólo cambian de color.
+            pickerInput(
+              inputId = 'complejo_alt',
+              label = h6(strong('Resaltar complejo racial:')),
+              choices = complejos_opciones,
+              selected = character(0),
+              multiple = TRUE,
+              options = pickerOptions(
+                selectedTextFormat = "count > 1",
+                countSelectedText = "{0} complejos",
+                noneSelectedText = "Ninguno"
+              ),
+              width = 200
+            )
+          ),
+          column(
+            width = 9,
+            # height = "auto": el contenedor toma la altura del SVG, que se calcula
+            # según el número de razas (ver alto_graph2 en server.R)
+            girafeOutput('graph2', height = "auto", width = "100%")
           )
-          
-        ) # close column
+        )
+      ), # close widget page
+
+      ## Altitud por raza: el gradiente completo de cada raza elegida, altitud por
+      ## altitud, en vez del resumen mínimo/promedio/máximo de la montaña.
+      tabItem(
+        tabName = "altitud_raza",
+        br(),
+        br(),
+        fluidRow(
+          column(
+            width = 3,
+            pickerInput(
+              inputId = 'razas_alt',
+              label = h6(strong('Raza:')),
+              # sólo las que tienen 5 o más altitudes distintas: con menos no hay
+              # gradiente que dibujar (ver razas_con_gradiente en global.R)
+              choices = razas_con_gradiente,
+              selected = razas_gradiente_default,
+              multiple = TRUE,
+              options = pickerOptions(
+                actionsBox = TRUE,
+                liveSearch = TRUE,
+                selectedTextFormat = "count > 2",
+                countSelectedText = "{0} razas",
+                noneSelectedText = "Ninguna raza",
+                selectAllText = "Todas",
+                deselectAllText = "Ninguna",
+                liveSearchPlaceholder = "Buscar raza..."
+              ),
+              width = 200
+            ),
+            # mismas líneas de referencia que en la pestaña de Altitud
+            pickerInput(
+              inputId = 'capitales2',
+              label = h6(strong('Comparar con la altitud de:')),
+              choices = capitales_opciones,
+              selected = character(0),
+              multiple = TRUE,
+              options = pickerOptions(
+                liveSearch = TRUE,
+                selectedTextFormat = "count > 1",
+                countSelectedText = "{0} ciudades",
+                noneSelectedText = "Ninguna ciudad",
+                liveSearchPlaceholder = "Buscar ciudad..."
+              ),
+              width = 200
+            )
+          ),
+          column(
+            width = 9,
+            girafeOutput('graph5', height = "auto", width = "100%")
+          )
+        )
       ), # close widget page
       
       ## Para la gráfica de Tamaño de mazorca
@@ -392,24 +526,45 @@ dashboardPagePlus(
         br(),
         h4(strong("Tamaño de mazorca para las diferentes razas de maíces")),
         br(),
+        # Mismo criterio que en Altitud: el selector va en su propia columna y no
+        # en un absolutePanel encima de la figura, que aquí es alta y con scroll.
         fluidRow(
-          tags$style(type = "text/css", "#graph3 {height: calc(100vh - 80px) !important;}"),
-          plotOutput('graph3', height = "100%", width = "100%")
-        ),
-        
-        absolutePanel(
-          top = 275,
-          right = 40,
-          draggable = T,
-          #Seleccionar la variable para
-          selectInput(
-            inputId = 'var12',
-            label = h4(strong('Ordenar por:')),
-            choices = c("promedio", "máximo", "mínimo"),
-            width = 200
+          column(
+            width = 3,
+            pickerInput(
+              inputId = 'Estado_maz',
+              label = h6(strong('Estado:')),
+              choices  = estados_mazorca,
+              selected = estados_mazorca,
+              multiple = TRUE,
+              options = pickerOptions(
+                actionsBox = TRUE,
+                liveSearch = TRUE,
+                selectedTextFormat = "count > 2",
+                countSelectedText = "{0} estados seleccionados",
+                noneSelectedText = "Ningún estado seleccionado",
+                selectAllText = "Todos",
+                deselectAllText = "Ninguno",
+                liveSearchPlaceholder = "Buscar estado..."
+              ),
+              width = 200
+            ),
+            selectInput(
+              inputId = 'var12',
+              label = h6(strong('Ordenar por:')),
+              choices = c("promedio", "máximo", "mínimo"),
+              width = 200
+            ),
+            uiOutput('mazorca_pie')
+          ),
+          column(
+            width = 9,
+            # D3 servido desde el propio www/, no desde un CDN
+            tags$script(src = "js/d3.v7.min.js"),
+            div(id = "mazorca_d3", style = "width:100%;"),
+            tags$script(src = "js/mazorca-maiz.js")
           )
-          
-        ) # close column
+        )
       ), # close widget page
       
       #Ventana 2.1 Sankeyplot
@@ -448,10 +603,23 @@ dashboardPagePlus(
             sidebarLayout(
           sidebarPanel(
             #Por Estado
-            selectInput(
+            pickerInput(
               inputId = "Estados",
               label = h5("Estado:"),
-              c("All", levels(as.factor(TableL2$Estado)))
+              choices  = sort(unique(as.character(TableL2$Estado))),
+              selected = sort(unique(as.character(TableL2$Estado))),
+              multiple = TRUE,
+              options = pickerOptions(
+                actionsBox = TRUE,
+                liveSearch = TRUE,
+                selectedTextFormat = "count > 2",
+                countSelectedText = "{0} estados seleccionados",
+                noneSelectedText = "Ningún estado seleccionado",
+                selectAllText = "Todos",
+                deselectAllText = "Ninguno",
+                liveSearchPlaceholder = "Buscar estado..."
+              ),
+              width = "100%"
             ),
             br(),
             h5("Visualización de la presencia de maíces en distintos estados"),
@@ -459,9 +627,11 @@ dashboardPagePlus(
             width = 2
           ),
           column(9,
-                 htmlOutput(
-                   "Sankeyplot1", width = "1000", height = "600"
-                 ))
+                 # D3 servido desde el propio www/, no desde un CDN
+                 tags$script(src = "js/d3.v7.min.js"),
+                 tags$script(src = "js/d3-sankey.min.js"),
+                 div(id = "sankey_d3", style = "width:100%;"),
+                 tags$script(src = "js/sankey-maiz.js"))
           
         ))
         #)
@@ -642,22 +812,25 @@ dashboardPagePlus(
         ),
         br(),
         fluidRow(
-          widgetUserBox(
-            title = h4("Alejandro Ponce-Mendoza"),
-            subtitle = "Experto para el Análisis de Información de Agrobiodiversidad",
+          userBox(
+            title = userDescription(
+              title = h4("Alejandro Ponce-Mendoza"),
+              subtitle = "Experto para el Análisis de Información de Agrobiodiversidad",
+              type = 2,
+              image = "APM.jpeg"
+            ),
             width = 4,
-            type = 2,
-            src = "APM.jpeg",
-            color = "yellow",
+            status = "warning",
+            collapsible = FALSE,
             h5(
               "Trabajo en la",
-              tags$a(href = "http://www.conabio.gob.mx/web/conocenos/CGAyRB_CPAM.html", "Conabio"),
+              tags$a(href = "https://www.gob.mx/conabio", "Conabio"),
               "para conservación de la agrobiodiversidad. Me interesa la visualización y análisis,
                                  de datos ecológicos. Mis publicaciones las puedes encontrar",
               tags$a(href = "https://scholar.google.com/citations?user=M1i6_loAAAAJ&hl=en", "aquí")
             ),
-            footer = socialButton(url = "https://github.com/APonce73",
-                                  type = "github"),
+            footer = socialButton(href = "https://github.com/APonce73",
+                                  icon = icon("github")),
             tags$a(href = "http://www.conabio.gob.mx/web/conocenos/CGAyRB_CPAM.html", "Conabio")
             
           )
