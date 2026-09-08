@@ -2,4 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-/extra_info/.DS_Store
+/extra_info/
+.DS_Store
