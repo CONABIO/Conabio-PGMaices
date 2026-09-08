@@ -1,0 +1,64 @@
+/* ---------------------------------------------------------------------------
+   Cajas de la portada ("Visualización")
+
+   Sin esto cada caja mide lo que mide su contenido, y como los textos de
+   descripción tienen distinto largo, las cajas de un mismo renglón quedaban
+   desparejas y las imágenes a distinta altura.
+
+   La solución es flexbox en tres niveles: el renglón estira las columnas, la
+   columna estira la caja, y la caja estira su cuerpo. Así todas las cajas de
+   un mismo renglón terminan con la altura de la más alta.
+
+   El detalle que remata: `margin-top: auto` en la imagen la empuja al fondo
+   del cuerpo de la caja. Con eso las imágenes quedan alineadas entre sí aunque
+   los textos de arriba tengan distinto número de renglones.
+
+   Traído de shiny-agro-phaseolus (www/styles.css).
+   --------------------------------------------------------------------------- */
+.visualizacion-cajas .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+.visualizacion-cajas .row > div[class*="col-"] {
+  display: flex;
+}
+.visualizacion-cajas .box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.visualizacion-cajas .box-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.visualizacion-cajas .box-body img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  margin-top: auto;
+}
+
+/* ---------------------------------------------------------------------------
+   Foto de la raza de maíz ("Diversidad de maíces")
+
+   Los 69 JPEG del catálogo van de 159 a 1200 px de ancho, y renderImage() no
+   fija dimensiones: cada foto se dibujaba a su tamaño natural, así que las
+   grandes desbordaban su contenedor.
+
+   Se usa max-width y NO width: las fotos grandes se reducen para caber, y las
+   pequeñas se quedan a su tamaño real, centradas. Ampliarlas sería peor:
+   Coscomatepec.jpg mide 159 px de ancho y estirarla al ancho de la columna la
+   ampliaría 4.6 veces.
+   --------------------------------------------------------------------------- */
+#preImage {
+  width: 100% !important;
+  height: auto !important;
+  text-align: center;
+}
+#preImage img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
