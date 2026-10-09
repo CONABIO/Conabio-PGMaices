@@ -47,6 +47,25 @@ library(readxl)
 
 TableP <- read_excel("PGM_update2017.xlsx", sheet = "PGM_maices_Alex", col_names = T)
 
+# 767 registros del .xlsx (los de la Universidad Autónoma Chapingo) llegaron con
+# el texto doblemente codificado: UTF-8 leído como Windows-1252 y vuelto a
+# guardar, así que "Opichén" aparece como "OpichÃ©n" en los popups del mapa.
+# Se revierte deshaciendo esa lectura: primero CP1252 (cubre "ESPAÃ‘ITA") y,
+# si no se puede, Latin-1. Sólo se toca lo que trae Ã/Â y sólo se acepta el
+# resultado si es UTF-8 válido. Si algún día se corrige el .xlsx, esto no hace
+# nada.
+reparar_mojibake <- function(x) {
+  r <- !is.na(x) & grepl("Ã|Â", x)
+  if (!any(r)) return(x)
+  y <- iconv(x[r], "UTF-8", "CP1252")
+  y[is.na(y)] <- iconv(x[r][is.na(y)], "UTF-8", "latin1")
+  Encoding(y) <- "UTF-8"
+  ok <- !is.na(y) & validUTF8(y)
+  x[r][ok] <- y[ok]
+  x
+}
+TableP <- dplyr::mutate(TableP, dplyr::across(where(is.character), reparar_mojibake))
+
 TTabla <- TableP %>%
   dplyr::filter(!is.na(Raza_primaria)) %>%
   dplyr::filter(!is.na(Latitud)) %>%
